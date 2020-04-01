@@ -1,4 +1,6 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
+import initServe from './serve'
+import { AddressInfo } from 'net'
 
 /**
  * Set `__static` path to static files in production
@@ -12,12 +14,7 @@ if (process.env.NODE_ENV !== 'development') {
 
 let mainWindow: BrowserWindow | null
 
-const winURL =
-  process.env.NODE_ENV === 'development'
-    ? 'http://localhost:9080'
-    : `file://${__dirname}/index.html`
-
-function createWindow() {
+async function createWindow(address: AddressInfo) {
   /**
    * Initial window options
    */
@@ -26,9 +23,12 @@ function createWindow() {
     useContentSize: true,
     width: 1000,
     webPreferences: {
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+      webSecurity: false,
+    },
   })
+
+  const winURL = `http://${address.address}:${address.port}`
 
   mainWindow.loadURL(winURL)
 
@@ -37,7 +37,16 @@ function createWindow() {
   })
 }
 
-app.on('ready', createWindow)
+app.on('ready', async () => {
+  // TODO
+  const address = await initServe()
+  if (address) {
+    global.addressInfo = address
+    createWindow(address)
+  } else {
+    // TODO
+  }
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -47,7 +56,7 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
   if (mainWindow === null) {
-    createWindow()
+    createWindow(global.addressInfo)
   }
 })
 

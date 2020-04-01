@@ -1,64 +1,26 @@
-import React from 'react'
-import logo from './assets/logo.svg'
+import React, { FunctionComponent, useEffect, useState } from 'react'
 import './App.css'
-import { hot } from 'react-hot-loader/root'
+
+import '../emulator/dist/core'
+import '../saladict/assets/runtime.9e1a8283.js'
+import '../saladict/assets/18.dcd4ca98.js'
+import '../saladict/assets/1.a3eb564a.js'
+import '../saladict/assets/3.49ec8a94.js'
+import '../saladict/assets/background.a9679961.js'
 import { remote } from 'electron'
+import { AddressInfo } from 'net'
 
-const App: React.FC = () => {
-  const electron = process.versions.electron
-  const node = process.versions.node
-  const platform = require('os').platform()
-  const version = require('../../package.json').version
+const addressInfo: AddressInfo = remote.getGlobal('addressInfo')
 
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault()
-    remote.shell.openExternal(e.currentTarget.href)
-  }
-
+const App: FunctionComponent<{}> = () => {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <ul className="App-info">
-          <li>
-            electron: <span>{electron}</span>
-          </li>
-          <li>
-            node: <span>{node}</span>
-          </li>
-          <li>
-            platform: <span>{platform}</span>
-          </li>
-          <li>
-            version: <span>{version}</span>
-          </li>
-        </ul>
-        <p>
-          Edit <code>src/renderer/App.tsx</code> and save to reload.
-        </p>
-        <div>
-          <a
-            onClick={handleLinkClick}
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          <a
-            onClick={handleLinkClick}
-            className="App-link"
-            href="https://electronjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn Electron
-          </a>
-        </div>
-      </header>
+      <iframe
+        className="iframe"
+        src={`http://${addressInfo.address}:${addressInfo.port}/quick-search.html`}
+      ></iframe>
     </div>
   )
 }
 
-export default hot(App)
+export default App
