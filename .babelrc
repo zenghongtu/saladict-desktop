@@ -1,0 +1,43 @@
+{
+  "comments": false,
+  "env": {
+    "test": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "targets": { "node": 12 }
+          }
+        ]
+      ],
+      "plugins": ["istanbul"]
+    },
+    "main": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "targets": { "node": 12 }
+          }
+        ]
+      ]
+    },
+    "renderer": {
+      "presets": ["@babel/preset-typescript", "@babel/preset-react"],
+      "plugins": ["react-hot-loader/babel"]
+    },
+
+    "web": {
+      "presets": [
+        "@babel/preset-env",
+        "@babel/preset-typescript",
+        "@babel/preset-react"
+      ]
+    }
+  },
+  "plugins": [
+    "@babel/plugin-syntax-dynamic-import",
+    "@babel/proposal-class-properties",
+    "@babel/proposal-object-rest-spread"
+  ]
+}
