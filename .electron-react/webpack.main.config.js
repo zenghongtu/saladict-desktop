@@ -6,6 +6,8 @@ const path = require('path');
 const webpack = require('webpack');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+
 
 // https://github.com/zenghongtu/create-electron-react/issues/3
 // const whiteListedModules = ['']
@@ -50,7 +52,11 @@ let mainConfig = {
   },
   plugins: [
     new ForkTsCheckerWebpackPlugin(),
-    new webpack.NoEmitOnErrorsPlugin()
+    new webpack.NoEmitOnErrorsPlugin(),
+    new CopyPlugin([
+      { from: 'src/emulator', to: 'emulator' },
+      { from: 'src/saladict', to: './' },
+    ]),
   ],
   resolve: {
     modules: ['src', 'node_modules'],
