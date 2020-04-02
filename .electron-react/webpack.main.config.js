@@ -1,13 +1,12 @@
-'use strict';
+'use strict'
 
-process.env.BABEL_ENV = 'main';
+process.env.BABEL_ENV = 'main'
 
-const path = require('path');
-const webpack = require('webpack');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
-
+const path = require('path')
+const webpack = require('webpack')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
+const CopyPlugin = require('copy-webpack-plugin')
 
 // https://github.com/zenghongtu/create-electron-react/issues/3
 // const whiteListedModules = ['']
@@ -21,7 +20,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 
 let mainConfig = {
   entry: {
-    main: path.join(__dirname, '../src/main/index.ts')
+    main: path.join(__dirname, '../src/main/index.ts'),
   },
   // externals,
   module: {
@@ -31,39 +30,39 @@ let mainConfig = {
         loader: 'ts-loader',
         options: {
           transpileOnly: true,
-          experimentalWatchApi: true
+          experimentalWatchApi: true,
         },
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         test: /\.node$/,
-        use: 'node-loader'
-      }
-    ]
+        use: 'node-loader',
+      },
+    ],
   },
   node: {
     __dirname: process.env.NODE_ENV !== 'production',
-    __filename: process.env.NODE_ENV !== 'production'
+    __filename: process.env.NODE_ENV !== 'production',
   },
   output: {
     filename: '[name].js',
     libraryTarget: 'commonjs2',
-    path: path.join(__dirname, '../dist/electron')
+    path: path.join(__dirname, '../dist/electron'),
   },
   plugins: [
     new ForkTsCheckerWebpackPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new CopyPlugin([
-      { from: 'src/emulator', to: 'emulator' },
-      { from: 'src/saladict', to: './' },
+      { context: 'src', from: 'emulator/dist/*.js', to: './' },
+      { context: 'src', from: 'saladict', to: './' },
     ]),
   ],
   resolve: {
     modules: ['src', 'node_modules'],
-    extensions: ['.js', '.ts', '.json', '.node']
+    extensions: ['.js', '.ts', '.json', '.node'],
   },
-  target: 'electron-main'
-};
+  target: 'electron-main',
+}
 
 /**
  * Adjust mainConfig for development settings
@@ -71,9 +70,9 @@ let mainConfig = {
 if (process.env.NODE_ENV !== 'production') {
   mainConfig.plugins.push(
     new webpack.DefinePlugin({
-      __static: `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`
-    })
-  );
+      __static: `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`,
+    }),
+  )
 }
 
 /**
@@ -82,13 +81,13 @@ if (process.env.NODE_ENV !== 'production') {
 if (process.env.NODE_ENV === 'production') {
   mainConfig.optimization = {
     minimize: true,
-    minimizer: [new TerserPlugin()]
-  };
+    minimizer: [new TerserPlugin()],
+  }
   mainConfig.plugins.push(
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': '"production"'
-    })
-  );
+      'process.env.NODE_ENV': '"production"',
+    }),
+  )
 }
 
-module.exports = mainConfig;
+module.exports = mainConfig
