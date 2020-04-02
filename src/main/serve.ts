@@ -19,6 +19,20 @@ const initServe = (): Promise<AddressInfo | null> => {
   return new Promise((resolve, reject) => {
     server = http
       .createServer(function onRequest(req, res) {
+        const pathname = req.url?.slice(1)
+        if (
+          pathname &&
+          pathname.endsWith('.html') &&
+          !pathname.startsWith('iframe.html')
+        ) {
+          const Location = `iframe.html?redirect=${pathname}`
+
+          res.writeHead(301, {
+            Location,
+          })
+
+          return res.end()
+        }
         // @ts-ignore
         serve(req, res, finalhandler(req, res))
       })

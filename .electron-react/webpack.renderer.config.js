@@ -11,13 +11,14 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const merge = require('webpack-merge')
 
 // https://github.com/zenghongtu/create-electron-react/issues/3
 // const whiteListedModules = ['react', 'react-dom'];
 
 const isProd = process.env.NODE_ENV === 'production'
 const isNotProd = process.env.NODE_ENV !== 'production'
-const rendererPath = path.resolve('src/renderer')
+const srcPath = path.resolve('src')
 
 let rendererConfig = {
   devtool: '#cheap-module-eval-source-map',
@@ -39,7 +40,7 @@ let rendererConfig = {
           'css-loader',
           'sass-loader',
         ],
-        include: [rendererPath],
+        include: [srcPath],
       },
       {
         test: /\.sass$/,
@@ -48,7 +49,7 @@ let rendererConfig = {
           'css-loader',
           'sass-loader?indentedSyntax',
         ],
-        include: [rendererPath],
+        include: [srcPath],
       },
       {
         test: /\.less$/,
@@ -57,7 +58,7 @@ let rendererConfig = {
           'css-loader',
           'less-loader',
         ],
-        include: [rendererPath],
+        include: [srcPath],
       },
       {
         test: /\.css$/,
@@ -65,7 +66,7 @@ let rendererConfig = {
           isProd ? MiniCssExtractPlugin.loader : 'style-loader',
           'css-loader',
         ],
-        include: [rendererPath],
+        include: [srcPath],
       },
       {
         test: /\.(js|jsx|ts|tsx)$/,
@@ -119,6 +120,7 @@ let rendererConfig = {
     new ForkTsCheckerWebpackPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
+      chunks: ['renderer'],
       template: path.resolve(__dirname, '../src/index.ejs'),
       templateParameters(compilation, assets, options) {
         return {
@@ -185,7 +187,7 @@ if (isProd) {
   }
 
   rendererConfig.plugins.push(
-    new MiniCssExtractPlugin({ filename: 'styles.css' }),
+    new MiniCssExtractPlugin({ filename: '[name].style.css' }),
     new CopyWebpackPlugin([
       {
         from: path.join(__dirname, '../static'),
@@ -202,4 +204,50 @@ if (isProd) {
   )
 }
 
-module.exports = rendererConfig
+const iframeConfig = merge({
+  customizeArray: merge.unique(
+    'plugins',
+    ['HtmlWebpackPlugin'],
+    (plugin) => plugin.constructor && plugin.constructor.name,
+  ),
+})(rendererConfig, {
+  entry: {
+    iframe: path.join(__dirname, '../src/iframe/index.tsx'),
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      filename: 'iframe.html',
+      chunks: ['iframe'],
+      template: path.resolve(__dirname, '../src/iframe/index.html'),
+      templateParameters(compilation, assets, options) {
+        return {
+          compilation: compilation,
+          webpack: compilation.getStats().toJson(),
+          webpackConfig: compilation.options,
+          htmlWebpackPlugin: {
+            files: assets,
+            options: options,
+          },
+          process,
+        }
+      },
+      minify: {
+        removeRedundantAttributes: true, // 删除多余的属性
+        collapseWhitespace: true, // 折叠空白区域
+        removeAttributeQuotes: true, // 移除属性的引号
+        removeComments: true, // 移除注释
+        collapseBooleanAttributes: true, // 省略只有 boolean 值的属性值 例如：readonly checked
+      },
+      nodeModules: isNotProd
+        ? path.resolve(__dirname, '../node_modules')
+        : false,
+    }),
+  ],
+  output: {
+    filename: '[name].js',
+    libraryTarget: 'umd',
+    path: path.join(__dirname, '../dist/electron'),
+  },
+})
+
+module.exports = [rendererConfig, iframeConfig]
