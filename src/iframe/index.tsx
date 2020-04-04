@@ -1,77 +1,98 @@
 import './style.scss'
-import { useEffect } from 'react'
+import { triggerInputValueChangeEvent } from './utils'
 
-const iframe = document.createElement('iframe')
-const query = new URLSearchParams(window.location.search)
+const loadIframe = async (src: string) => {
+  const iframe = document.createElement('iframe')
 
-window.browser.runtime.onInstalled._listeners.forEach((listener) => {
-  // delay startup calls
-  listener({ reason: '' })
-})
+  iframe.src = src
 
-const redirectUrl = query.get('redirect')
+  return new Promise<HTMLIFrameElement>((resolve, reject) => {
+    iframe.onload = function () {
+      resolve(iframe)
+    }
 
-iframe.src = `/${redirectUrl}?direct=true`
-
-document.body.appendChild(iframe)
-
-if (redirectUrl?.startsWith('quick-search')) {
-  setTimeout(() => {
-    const c = iframe.contentWindow?.document.querySelector(
-      '#root > div > div.dictPanel-Head > header > button:nth-child(8)',
-    )
-    c.style.display = 'none'
-    const d = iframe.contentWindow?.document.querySelector(
-      '#root > div > div.dictPanel-Head > header > button:nth-child(9)',
-    )
-    d.style.display = 'none'
-
-    const ele = iframe.contentWindow?.document.querySelector(
-      '#root > div > div.dictPanel-Head > header > button:nth-child(6)',
-    ) as Element
-
-    ele.addEventListener('click', (event) => {
-      event.preventDefault()
-      event.stopPropagation()
-      const inputEle = iframe.contentWindow?.document.querySelector(
-        '#root > div > div.dictPanel-Head > header > div.menuBar-SearchBox_Wrap > input',
-      ) as HTMLInputElement
-      window.browser.runtime.sendMessage({
-        type: 'OPEN_URL',
-        payload: {
-          url:
-            'word-editor.html?word=' + encodeURIComponent(inputEle.value || ''),
-          self: true,
-        },
-      })
-    })
-  }, 500)
+    iframe.onerror = function (error) {
+      reject(error)
+    }
+    document.body.appendChild(iframe)
+  })
 }
 
-if (redirectUrl?.startsWith('word-editor')) {
-  const word = decodeURIComponent(query.get('word') || '')
+let iframe: HTMLIFrameElement
+
+const querySelectorFromIframe = (selector: string, wrap = iframe) => {
+  return wrap.contentWindow?.document.querySelector(selector)
+}
+
+const handleQuickSearchPage = () => {
+  const dictHeadELe = querySelectorFromIframe(
+    '#root > div > div.dictPanel-Head > header',
+  )
+
+  if (!dictHeadELe) {
+    return
+  }
+
+  ;(dictHeadELe.querySelector(
+    'button:nth-child(8)',
+  ) as HTMLButtonElement).style.display = 'none'
+  ;(dictHeadELe.querySelector(
+    'button:nth-child(9)',
+  ) as HTMLButtonElement).style.visibility = 'hidden'
+  ;(dictHeadELe.querySelector(
+    'button:nth-child(6)',
+  ) as HTMLButtonElement).addEventListener('click', (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+
+    const inputEle = dictHeadELe.querySelector(
+      'div.menuBar-SearchBox_Wrap > input',
+    ) as HTMLInputElement
+
+    // @ts-ignore
+    window.browser.runtime.sendMessage({
+      type: 'OPEN_URL',
+      payload: {
+        url:
+          'word-editor.html?word=' + encodeURIComponent(inputEle.value || ''),
+        self: true,
+      },
+    })
+  })
+}
+
+const handleWordEditorPage = (text: string) => {
+  const word = decodeURIComponent(text || '')
 
   setTimeout(() => {
-    const ele = iframe.contentWindow?.document.querySelector(
+    const ele = querySelectorFromIframe(
       '#wordEditorNote_Word',
     ) as HTMLInputElement
 
     // @ts-ignore
-    const nativeInputSet = Object.getOwnPropertyDescriptor(
-      window.HTMLInputElement.prototype,
-      'value',
-    ).set
-
-    // @ts-ignore
-    nativeInputSet.call(ele, word)
-
-    const inputEvent = new Event('input', { bubbles: true })
-    ele.dispatchEvent(inputEvent)
-
-    iframe.contentWindow?.document
-      .querySelector(
-        '#root > div > div > div > div > footer > button:nth-child(1)',
-      )
-      ?.click()
-  }, 1000)
+    triggerInputValueChangeEvent(ele, word)
+    ;(querySelectorFromIframe(
+      '#root > div > div > div > div > footer > button:nth-child(1)',
+    ) as HTMLButtonElement).click()
+  }, 500)
 }
+
+;(async () => {
+  const query = new URLSearchParams(window.location.search)
+
+  const redirectUrl = query.get('redirect') || ''
+
+  if (!redirectUrl) {
+    return
+  }
+
+  const src = `/${redirectUrl}?direct=true`
+
+  iframe = await loadIframe(src)
+
+  if (redirectUrl.startsWith('quick-search')) {
+    handleQuickSearchPage()
+  } else if (redirectUrl.startsWith('word-editor')) {
+    handleWordEditorPage(query.get('word') || '')
+  }
+})()
