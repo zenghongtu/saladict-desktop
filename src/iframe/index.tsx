@@ -17,6 +17,15 @@ document.body.appendChild(iframe)
 
 if (redirectUrl?.startsWith('quick-search')) {
   setTimeout(() => {
+    const c = iframe.contentWindow?.document.querySelector(
+      '#root > div > div.dictPanel-Head > header > button:nth-child(8)',
+    )
+    c.style.display = 'none'
+    const d = iframe.contentWindow?.document.querySelector(
+      '#root > div > div.dictPanel-Head > header > button:nth-child(9)',
+    )
+    d.style.display = 'none'
+
     const ele = iframe.contentWindow?.document.querySelector(
       '#root > div > div.dictPanel-Head > header > button:nth-child(6)',
     ) as Element
@@ -36,7 +45,7 @@ if (redirectUrl?.startsWith('quick-search')) {
         },
       })
     })
-  }, 1000)
+  }, 500)
 }
 
 if (redirectUrl?.startsWith('word-editor')) {
