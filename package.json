@@ -17,7 +17,6 @@
     "pack": "yarn run pack:main && yarn run pack:renderer",
     "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-react/webpack.main.config.js",
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-react/webpack.renderer.config.js",
-    "postinstall": "yarn run lint:fix",
     "test": "yarn run test:unit && yarn run test:e2e",
     "test:unit": "jest -c jest.unit.config.js",
     "test:e2e": "yarn run pack && jest -c jest.e2e.config.js"
