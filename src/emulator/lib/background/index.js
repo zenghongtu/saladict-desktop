@@ -1,14 +1,14 @@
-import { runtime } from './patches/runtime';
-import { tabs } from './patches/tabs';
+import { runtime } from './patches/runtime'
+import { tabs } from './patches/tabs'
 
 window.browser = new Proxy(window.parent.browser, {
   get: (...args) => {
     switch (args[1]) {
       case 'tabs':
-        return tabs;
+        return tabs
       case 'runtime':
-        return runtime;
+        return runtime
     }
-    return Reflect.get(...args);
-  },
-});
+    return Reflect.get(...args)
+  }
+})

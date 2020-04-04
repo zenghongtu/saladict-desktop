@@ -58,9 +58,7 @@ export function runtimeSendMessage (listenersArea) {
     })
   }
 
-  sendMessage._sender = (...args)=>{
-    console.log(args);
-  }
+  sendMessage._sender = sinon.stub().callsFake(() => ({}))
 
   return sendMessage
 }
