@@ -185,7 +185,8 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "iohook": "^0.6.5"
+    "iohook": "^0.6.5",
+    "robotjs": "^0.6.0"
   },
   "iohook": {
     "targets": [
