@@ -1,27 +1,30 @@
 import _ from 'lodash'
-import { ipcRenderer } from 'electron'
+
+const getFromLS = (key) => {
+  let result = localStorage.getItem(key)
+
+  try {
+    result = JSON.parse(result)
+  } catch (err) {
+    console.error(`get ${p} from LS error: `, err)
+  }
+
+  return result || {}
+}
 
 const storageData = Symbol.for('fake_env_storageData')
 
 window[storageData] = {
-  local: {},
-  sync: {},
-  managed: {},
+  local: getFromLS('local'),
+  sync: getFromLS('sync'),
+  managed: getFromLS('managed'),
   listeners: [],
 }
 
 window[storageData] = new Proxy(window[storageData], {
   get: (target, p, receiver) => {
     if (['local', 'sync', 'managed'].includes(p)) {
-      const result = localStorage.getItem(p)
-      let data = {}
-
-      try {
-        data = JSON.parse(result) || {}
-      } catch (err) {
-        console.error(`proxy get ${p} execute error: `, err)
-      }
-      return data
+      return getFromLS(p)
     }
 
     return Reflect.get(target, p)
