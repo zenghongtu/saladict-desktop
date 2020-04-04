@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import initServe from './serve'
 import { AddressInfo } from 'net'
+import initIpcHandler from './ipc'
 
 /**
  * Set `__static` path to static files in production
@@ -25,16 +26,18 @@ async function createWindow(address: AddressInfo) {
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false,
+      nodeIntegrationInSubFrames: true,
     },
   })
 
-  const winURL = `http://${address.address}:${address.port}`
+  const baseURL = `http://${address.address}:${address.port}`
 
-  mainWindow.loadURL(winURL)
+  mainWindow.loadURL(baseURL)
 
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+  initIpcHandler(mainWindow, { baseURL })
 }
 
 app.on('ready', async () => {
