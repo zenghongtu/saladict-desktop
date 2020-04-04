@@ -53,7 +53,7 @@ let mainConfig = {
     new ForkTsCheckerWebpackPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new CopyPlugin([
-      { context: 'src', from: 'emulator/dist/*.js', to: './' },
+      { context: 'src', from: 'emulator/dist/*', to: './' },
       { context: 'src', from: 'saladict', to: './' },
     ]),
   ],
