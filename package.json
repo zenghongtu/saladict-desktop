@@ -4,7 +4,7 @@
   "author": "zenghongtu",
   "description": "An electron-react project",
   "license": "MIT",
-  "main": "./dist/electron/main.js",
+  "main": "./main.js",
   "scripts": {
     "build": "node .electron-react/build.js && electron-builder",
     "build:dir": "node .electron-react/build.js && electron-builder --dir",
@@ -28,36 +28,75 @@
       "output": "build"
     },
     "files": [
-      "dist/electron/**/*"
+      {
+        "from": "dist/electron",
+        "to": ".",
+        "filter": [
+          "**/*",
+          "!**/*.map"
+        ]
+      },
+      "package.json"
     ],
-    "dmg": {
-      "contents": [
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "category": "public.app-category.development",
+      "icon": "build/icons/icon.icns",
+      "darkModeSupport": true
+    },
+    "win": {
+      "icon": "build/icons/icon.ico",
+      "target": [
         {
-          "x": 410,
-          "y": 150,
-          "type": "link",
-          "path": "/Applications"
-        },
-        {
-          "x": 130,
-          "y": 150,
-          "type": "file"
+          "target": "nsis",
+          "arch": [
+            "ia32"
+          ]
         }
       ]
     },
-    "mac": {
-      "icon": "build/icons/icon.icns"
+    "nsis": {
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "PPet",
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "PPet-${version}.${ext}",
+      "unicode": true
     },
-    "win": {
-      "icon": "build/icons/icon.ico"
+    "extraFiles": [],
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
     },
     "linux": {
-      "icon": "build/icons"
-    }
-  },
-  "dependencies": {
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+      "icon": "build/icons",
+      "target": [
+        "deb"
+      ],
+      "category": "Development"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "zenghongtu",
+        "repo": "saladict-desktop"
+      }
+    ]
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
@@ -122,6 +161,8 @@
     "node-sass": "^4.13.1",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "prettier": "^2.0.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "react-hot-loader": "^4.12.20",
     "sass-loader": "^8.0.2",
     "serve-static": "^1.14.1",
