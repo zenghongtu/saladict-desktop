@@ -131,7 +131,7 @@
     "ts-jest": "^25.3.0",
     "ts-loader": "^6.2.2",
     "tslint": "^6.1.0",
-    "typescript": "^3.8.3",
+    "typescript": "3.7.5",
     "url-loader": "^4.0.0",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
