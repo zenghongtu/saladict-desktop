@@ -1,5 +1,6 @@
 import './style.scss'
 import { triggerInputValueChangeEvent } from './utils'
+import { remote } from 'electron'
 
 const loadIframe = async (src: string) => {
   const iframe = document.createElement('iframe')
@@ -77,7 +78,20 @@ const handleWordEditorPage = (text: string) => {
   }, 500)
 }
 
-;(async () => {
+;(() => {
+  const currentVersion = remote.app.getVersion()
+
+  if ((localStorage.getItem('VERSION') || '') < currentVersion) {
+    // @ts-ignore
+    window.browser.runtime.onInstalled._listeners.forEach((listener) => {
+      listener({ reason: '' })
+    })
+
+    localStorage.setItem('VERSION', currentVersion)
+  }
+})()
+
+const main = async () => {
   const query = new URLSearchParams(window.location.search)
 
   const redirectUrl = query.get('redirect') || ''
@@ -95,4 +109,6 @@ const handleWordEditorPage = (text: string) => {
   } else if (redirectUrl.startsWith('word-editor')) {
     handleWordEditorPage(query.get('word') || '')
   }
-})()
+}
+
+main()
