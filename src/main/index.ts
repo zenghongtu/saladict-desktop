@@ -1,28 +1,36 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain, Tray, nativeImage } from 'electron'
 import initServe from './serve'
 import { AddressInfo } from 'net'
 import initIpcHandler from './ipc'
+import path from 'path'
+import initTray from './tray'
 
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
  */
 if (process.env.NODE_ENV !== 'development') {
-  global.__static = require('path')
-    .join(__dirname, '/static')
-    .replace(/\\/g, '\\\\')
+  global.__static = path.join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
+
+app.dock.hide()
 
 let mainWindow: BrowserWindow | null
 
+let forceQuit = false
+
 async function createWindow(address: AddressInfo) {
-  /**
-   * Initial window options
-   */
   mainWindow = new BrowserWindow({
-    height: 563,
+    width: 460,
+    height: 560,
+    minWidth: 460,
+    minHeight: 560,
+    fullscreenable: false,
+    minimizable: false,
+    maximizable: false,
     useContentSize: true,
-    width: 1000,
+    // frame: false,
+    show: false,
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false,
@@ -37,7 +45,25 @@ async function createWindow(address: AddressInfo) {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+
+  mainWindow.on('close', (event) => {
+    if (forceQuit) {
+      app.quit()
+    } else {
+      event.preventDefault()
+      mainWindow?.hide()
+    }
+  })
+
+  mainWindow.on('blur', () => {
+    mainWindow?.hide()
+  })
+
+  mainWindow.on('ready-to-show', () => {})
+
   initIpcHandler(mainWindow, { baseURL })
+
+  return mainWindow
 }
 
 app.on('ready', async () => {
@@ -49,12 +75,17 @@ app.on('ready', async () => {
   } else {
     // TODO
   }
+  initTray(mainWindow)
 })
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
+})
+
+app.on('before-quit', (e) => {
+  forceQuit = true
 })
 
 app.on('activate', () => {

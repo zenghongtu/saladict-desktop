@@ -2,6 +2,7 @@
 /// <reference types="react" />
 /// <reference types="react-dom" />
 
+const __static: string
 declare namespace NodeJS {
   interface Global {
     __static: string

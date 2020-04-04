@@ -4156,6 +4156,11 @@ electron-localshortcut@^3.1.0:
     keyboardevent-from-electron-accelerator "^2.0.0"
     keyboardevents-areequal "^0.2.1"
 
+electron-positioner@^4.1.0:
+  version "4.1.0"
+  resolved "http://r.cnpmjs.org/electron-positioner/download/electron-positioner-4.1.0.tgz#e158f8f6aabd6725a8a9b4f2279b9504bcbea1b0"
+  integrity sha1-4Vj49qq9ZyWoqbTyJ5uVBLy+obA=
+
 electron-publish@22.4.1:
   version "22.4.1"
   resolved "https://registry.npm.taobao.org/electron-publish/download/electron-publish-22.4.1.tgz?cache=0&sync_timestamp=1585735414540&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Felectron-publish%2Fdownload%2Felectron-publish-22.4.1.tgz#a7fcf166786f7d5957f19a70ee8389f219769ba5"
