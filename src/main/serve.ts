@@ -5,6 +5,7 @@ import serveStatic from 'serve-static'
 import { ipcMain, app } from 'electron'
 import path from 'path'
 import { AddressInfo } from 'net'
+import * as url from 'url'
 
 let server: Server | null = null
 
@@ -19,13 +20,22 @@ const initServe = (): Promise<AddressInfo | null> => {
   return new Promise((resolve, reject) => {
     server = http
       .createServer(function onRequest(req, res) {
-        const pathname = req.url?.slice(1)
+        const { pathname, query } = url.parse(req.url || '', true)
+        const { redirect, word, direct } = query
+
         if (
           pathname &&
           pathname.endsWith('.html') &&
-          !pathname.startsWith('iframe.html')
+          // !pathname.startsWith('iframe.html') &&
+          !direct &&
+          !redirect
         ) {
-          const Location = `iframe.html?redirect=${pathname}`
+          const location = url.format({
+            pathname: 'iframe.html',
+            query: { ...query, redirect: pathname.slice(1) },
+          })
+
+          const Location = location
 
           res.writeHead(301, {
             Location,

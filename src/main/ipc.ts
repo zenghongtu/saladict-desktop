@@ -9,8 +9,9 @@ const initIpcHandler = (
     const { type, payload } = action
 
     if (type === 'OPEN_URL') {
-      const loadUrl = `${baseURL}/${payload.url}`
-      windows.add(loadUrl, payload.url)
+      const url = payload.url
+      const loadUrl = `${baseURL}/${url}`
+      windows.add(loadUrl, url.split('.html')[0])
     }
 
     return new Promise((resolve, reject) => {
