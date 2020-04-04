@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
+    "electron-store": "^5.1.1",
     "html-webpack-plugin": "^4.0.3",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",

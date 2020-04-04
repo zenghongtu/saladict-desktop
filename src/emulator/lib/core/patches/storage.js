@@ -1,15 +1,8 @@
 import _ from 'lodash'
+import { store } from '../../helpers'
 
 const getFromLS = (key) => {
-  let result = localStorage.getItem(key)
-
-  try {
-    result = JSON.parse(result)
-  } catch (err) {
-    console.error(`get ${p} from LS error: `, err)
-  }
-
-  return result || {}
+  return store.get(key) || {}
 }
 
 const storageData = Symbol.for('fake_env_storageData')
@@ -32,7 +25,7 @@ window[storageData] = new Proxy(window[storageData], {
   set: (target, p, value, receiver) => {
     if (['local', 'sync', 'managed'].includes(p)) {
       try {
-        localStorage.setItem(p, JSON.stringify(value))
+        store.set(p, value)
         return true
       } catch (err) {
         console.error(`proxy set ${p} execute error: `, err)

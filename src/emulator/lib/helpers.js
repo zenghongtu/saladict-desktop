@@ -1,12 +1,19 @@
 import _ from 'lodash'
 import sinon from 'sinon'
 import { ipcRenderer } from 'electron'
+import Store from 'electron-store'
+
+export const store = new Store({ accessPropertiesByDotNotation: false })
 
 export const msgPageListeners = Symbol.for('fake_env_msgPageListeners')
 export const msgBgListeners = Symbol.for('fake_env_msgBackgroundListeners')
 
 export function runtimeSendMessage(listenersArea) {
   async function sendMessage(extensionId, message) {
+    console.table(extensionId)
+    if (extensionId.type.includes('SELECTION')) {
+      return Promise.resolve()
+    }
     if (extensionId.type === 'OPEN_URL') {
       return ipcRenderer.invoke('sala-extension-message', extensionId)
     }
