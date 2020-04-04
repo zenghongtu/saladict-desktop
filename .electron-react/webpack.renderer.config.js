@@ -20,11 +20,9 @@ const isProd = process.env.NODE_ENV === 'production'
 const isNotProd = process.env.NODE_ENV !== 'production'
 const srcPath = path.resolve('src')
 
-let rendererConfig = {
+let baseConfig = {
   devtool: '#cheap-module-eval-source-map',
-  entry: {
-    renderer: path.join(__dirname, '../src/renderer/index.tsx'),
-  },
+
   // externals: [
   //   ...Object.keys(dependencies || {}).filter(
   //     d => !whiteListedModules.includes(d)
@@ -118,6 +116,70 @@ let rendererConfig = {
   },
   plugins: [
     new ForkTsCheckerWebpackPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
+  ],
+  output: {
+    filename: '[name].js',
+    libraryTarget: 'commonjs2',
+    path: path.join(__dirname, '../dist/electron'),
+  },
+  resolve: {
+    modules: ['src', 'node_modules'],
+    alias: {
+      '@': path.join(__dirname, '../src/renderer'),
+    },
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.css', '.node'],
+  },
+  target: 'electron-renderer',
+}
+
+/**
+ * Adjust baseConfig for development settings
+ */
+if (isNotProd) {
+  baseConfig.plugins.push(
+    new webpack.DefinePlugin({
+      __static: `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`,
+    }),
+  )
+}
+
+/**
+ * Adjust baseConfig for production settings
+ */
+if (isProd) {
+  baseConfig.devtool = ''
+  baseConfig.optimization = {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({ extractComments: false }),
+      new OptimizeCSSAssetsPlugin({}),
+    ],
+  }
+
+  baseConfig.plugins.push(
+    new MiniCssExtractPlugin({ filename: '[name].style.css' }),
+    new CopyWebpackPlugin([
+      {
+        from: path.join(__dirname, '../static'),
+        to: path.join(__dirname, '../dist/electron/static'),
+        ignore: ['.*'],
+      },
+    ]),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': '"production"',
+    }),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+    }),
+  )
+}
+
+const rendererConfig = merge(baseConfig, {
+  entry: {
+    renderer: path.join(__dirname, '../src/renderer/index.tsx'),
+  },
+  plugins: [
     new HtmlWebpackPlugin({
       filename: 'index.html',
       chunks: ['renderer'],
@@ -145,114 +207,82 @@ let rendererConfig = {
         ? path.resolve(__dirname, '../node_modules')
         : false,
     }),
-    new webpack.NoEmitOnErrorsPlugin(),
   ],
+})
+
+const iframeConfig = merge(baseConfig, {
+  entry: {
+    iframe: path.join(__dirname, '../src/iframe/index.tsx'),
+  },
   output: {
     filename: '[name].js',
-    libraryTarget: 'commonjs2',
+    libraryTarget: 'umd',
     path: path.join(__dirname, '../dist/electron'),
   },
-  resolve: {
-    modules: ['src', 'node_modules'],
-    alias: {
-      '@': path.join(__dirname, '../src/renderer'),
-    },
-    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.css', '.node'],
-  },
-  target: 'electron-renderer',
-}
-
-/**
- * Adjust rendererConfig for development settings
- */
-if (isNotProd) {
-  rendererConfig.plugins.push(
-    new webpack.DefinePlugin({
-      __static: `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`,
-    }),
-  )
-}
-
-/**
- * Adjust rendererConfig for production settings
- */
-if (isProd) {
-  rendererConfig.devtool = ''
-  rendererConfig.optimization = {
-    minimize: true,
-    minimizer: [
-      new TerserPlugin({ extractComments: false }),
-      new OptimizeCSSAssetsPlugin({}),
-    ],
-  }
-
-  rendererConfig.plugins.push(
-    new MiniCssExtractPlugin({ filename: '[name].style.css' }),
-    new CopyWebpackPlugin([
-      {
-        from: path.join(__dirname, '../static'),
-        to: path.join(__dirname, '../dist/electron/static'),
-        ignore: ['.*'],
+  plugins: [
+    new HtmlWebpackPlugin({
+      filename: 'iframe.html',
+      chunks: ['iframe'],
+      template: path.resolve(__dirname, '../src/iframe/index.html'),
+      templateParameters(compilation, assets, options) {
+        return {
+          compilation: compilation,
+          webpack: compilation.getStats().toJson(),
+          webpackConfig: compilation.options,
+          htmlWebpackPlugin: {
+            files: assets,
+            options: options,
+          },
+          process,
+        }
       },
-    ]),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': '"production"',
+      minify: {
+        removeRedundantAttributes: true, // 删除多余的属性
+        collapseWhitespace: true, // 折叠空白区域
+        removeAttributeQuotes: true, // 移除属性的引号
+        removeComments: true, // 移除注释
+        collapseBooleanAttributes: true, // 省略只有 boolean 值的属性值 例如：readonly checked
+      },
+      nodeModules: isNotProd
+        ? path.resolve(__dirname, '../node_modules')
+        : false,
     }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true,
+  ],
+})
+
+const saladbowlConfig = merge(rendererConfig, {
+  entry: {
+    saladbowl: path.join(__dirname, '../src/saladbowl/index.tsx'),
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      filename: 'saladbowl.html',
+      chunks: ['saladbowl'],
+      template: path.resolve(__dirname, '../src/index.ejs'),
+      templateParameters(compilation, assets, options) {
+        return {
+          compilation: compilation,
+          webpack: compilation.getStats().toJson(),
+          webpackConfig: compilation.options,
+          htmlWebpackPlugin: {
+            files: assets,
+            options: options,
+          },
+          process,
+        }
+      },
+      minify: {
+        removeRedundantAttributes: true, // 删除多余的属性
+        collapseWhitespace: true, // 折叠空白区域
+        removeAttributeQuotes: true, // 移除属性的引号
+        removeComments: true, // 移除注释
+        collapseBooleanAttributes: true, // 省略只有 boolean 值的属性值 例如：readonly checked
+      },
+      nodeModules: isNotProd
+        ? path.resolve(__dirname, '../node_modules')
+        : false,
     }),
-  )
-}
+  ],
+})
 
-const iframeConfig = merge({
-  customizeArray: merge.unique(
-    'plugins',
-    ['HtmlWebpackPlugin'],
-    (plugin) => plugin.constructor && plugin.constructor.name,
-  ),
-})(
-  {
-    plugins: [
-      new HtmlWebpackPlugin({
-        filename: 'iframe.html',
-        chunks: ['iframe'],
-        template: path.resolve(__dirname, '../src/iframe/index.html'),
-        templateParameters(compilation, assets, options) {
-          return {
-            compilation: compilation,
-            webpack: compilation.getStats().toJson(),
-            webpackConfig: compilation.options,
-            htmlWebpackPlugin: {
-              files: assets,
-              options: options,
-            },
-            process,
-          }
-        },
-        minify: {
-          removeRedundantAttributes: true, // 删除多余的属性
-          collapseWhitespace: true, // 折叠空白区域
-          removeAttributeQuotes: true, // 移除属性的引号
-          removeComments: true, // 移除注释
-          collapseBooleanAttributes: true, // 省略只有 boolean 值的属性值 例如：readonly checked
-        },
-        nodeModules: isNotProd
-          ? path.resolve(__dirname, '../node_modules')
-          : false,
-      }),
-    ],
-  },
-  rendererConfig,
-  {
-    entry: {
-      iframe: path.join(__dirname, '../src/iframe/index.tsx'),
-    },
-    output: {
-      filename: '[name].js',
-      libraryTarget: 'umd',
-      path: path.join(__dirname, '../dist/electron'),
-    },
-  },
-)
-
-module.exports = [rendererConfig, iframeConfig]
+module.exports = [rendererConfig, iframeConfig, saladbowlConfig]

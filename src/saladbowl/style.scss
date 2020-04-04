@@ -1,0 +1,27 @@
+html,
+body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+}
+
+.saladbowl {
+  will-change: transform;
+  transition: transform 0.3s ease-out;
+
+  &:hover {
+    .saladbowl-leaf {
+      animation: saladbowl-leaf-shake 0.7s infinite linear;
+    }
+    .saladbowl-orange {
+      transform-origin: 301.8px 187.4px;
+      animation: saladbowl-orange-spin 0.7s infinite linear;
+    }
+    .saladbowl-tomato {
+      transform-origin: 297.8px 126.4px;
+      animation: saladbowl-tomato-shake 0.7s infinite linear;
+    }
+  }
+}

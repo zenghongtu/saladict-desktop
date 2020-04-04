@@ -4,6 +4,7 @@ import { AddressInfo } from 'net'
 import initIpcHandler from './ipc'
 import path from 'path'
 import initTray from './tray'
+import initSaladbowl from './saladbowl'
 
 /**
  * Set `__static` path to static files in production
@@ -76,6 +77,7 @@ app.on('ready', async () => {
     // TODO
   }
   initTray(mainWindow)
+  initSaladbowl()
 })
 
 app.on('window-all-closed', () => {
