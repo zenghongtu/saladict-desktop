@@ -16,7 +16,6 @@
     "jsx": "react",
     "sourceMap": false,
     "baseUrl": ".",
-    "typeRoots": ["node_modules/@types"],
     "paths": {
       "@/*": ["src/renderer/*"]
     }
