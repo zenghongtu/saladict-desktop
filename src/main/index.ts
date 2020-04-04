@@ -78,6 +78,7 @@ app.on('ready', async () => {
   }
   initTray(mainWindow)
   initSaladbowl()
+  initListener()
 })
 
 app.on('window-all-closed', () => {
