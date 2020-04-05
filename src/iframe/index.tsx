@@ -39,6 +39,12 @@ const handleQuickSearchPage = () => {
     'div.menuBar-SearchBox_Wrap > input',
   ) as HTMLInputElement
 
+  ipcRenderer.on('search-word-message', (event, { text }) => {
+    triggerInputValueChangeEvent(searchInputEle, text)
+    ;(dictHeadELe.querySelector(
+      'button:nth-child(4)',
+    ) as HTMLInputElement).click()
+  })
 
   dictHeadELe.addEventListener('click', (event) => {
     let target = event.target as HTMLElement

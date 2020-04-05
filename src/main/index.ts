@@ -5,6 +5,7 @@ import initIpcHandler from './ipc'
 import path from 'path'
 import initTray from './tray'
 import initSaladbowl from './saladbowl'
+import initListener from './listener'
 
 /**
  * Set `__static` path to static files in production
@@ -60,7 +61,13 @@ async function createWindow(address: AddressInfo) {
     mainWindow?.hide()
   })
 
-  mainWindow.on('ready-to-show', () => {})
+  mainWindow.on('ready-to-show', () => {
+    mainWindow?.show()
+  })
+
+  mainWindow.setMenu(null)
+  mainWindow.setMenuBarVisibility(false)
+  mainWindow.setVisibleOnAllWorkspaces(true)
 
   initIpcHandler(mainWindow, { baseURL })
 
@@ -78,7 +85,7 @@ app.on('ready', async () => {
   }
   initTray(mainWindow)
   initSaladbowl()
-  initListener()
+  initListener(mainWindow)
 })
 
 app.on('window-all-closed', () => {

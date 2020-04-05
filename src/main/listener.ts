@@ -1,10 +1,10 @@
 import ioHook from 'iohook'
-import { app } from 'electron'
+import { app, BrowserWindow } from 'electron'
 import { getSelectedText } from './utils'
 
 let mouseDownAt: number = 0
 
-const initListener = () => {
+const initListener = (mainWin: BrowserWindow | null) => {
   ioHook.on('mousedown', (event) => {
     mouseDownAt = +new Date()
   })
@@ -14,7 +14,10 @@ const initListener = () => {
 
     if (+new Date() - mouseDownAt > 500 || clicks >= 2) {
       const text = await getSelectedText()
-      console.log(text, '  ', +new Date())
+      mainWin?.webContents.send('search-word-message', { text })
+      mainWin?.setPosition(x + 10, y + 10)
+      mainWin?.show()
+      console.log(text, ' @', +new Date())
     }
   })
 
