@@ -11,6 +11,7 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyPlugin = require('copy-webpack-plugin')
 const merge = require('webpack-merge')
 
 // https://github.com/zenghongtu/create-electron-react/issues/3
@@ -247,6 +248,7 @@ const iframeConfig = merge(baseConfig, {
         ? path.resolve(__dirname, '../node_modules')
         : false,
     }),
+    new CopyPlugin([{ from: 'src/iframe/options.custom.css', to: './' }]),
   ],
 })
 
