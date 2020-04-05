@@ -67,7 +67,7 @@ const handleQuickSearchPage = () => {
           type: 'OPEN_URL',
           payload: {
             url:
-              'word-editor.html?word=' +
+              'word-editor.html&word=' +
               encodeURIComponent(searchInputEle.value || ''),
             self: true,
           },
