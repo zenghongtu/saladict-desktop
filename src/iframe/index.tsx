@@ -67,7 +67,7 @@ const handleQuickSearchPage = () => {
           },
         })
       } else {
-        // TODO
+        remote.getCurrentWindow().hide()
       }
     }
   })
