@@ -94,11 +94,7 @@ const handleWordEditorPage = (text: string) => {
 const main = async () => {
   const query = new URLSearchParams(window.location.search)
 
-  const redirectUrl = query.get('redirect') || ''
-
-  if (!redirectUrl) {
-    return
-  }
+  const redirectUrl = query.get('redirect') || 'quick-search.html'
 
   const src = `/${redirectUrl}?direct=true`
 

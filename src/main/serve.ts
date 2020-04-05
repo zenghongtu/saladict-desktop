@@ -13,7 +13,7 @@ let appPath = app.getAppPath()
 
 const initServe = (): Promise<AddressInfo | null> => {
   const serve = serveStatic(appPath, {
-    index: 'index.html',
+    index: 'iframe.html',
     maxAge: 48 * 60 * 60 * 1e3,
   })
 
