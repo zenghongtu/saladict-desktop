@@ -1,11 +1,11 @@
 import { app, BrowserWindow, ipcMain, Tray, nativeImage } from 'electron'
-import initServe from './serve'
-import { AddressInfo } from 'net'
 import initIpcHandler from './ipc'
 import path from 'path'
 import initTray from './tray'
 import initSaladbowl from './saladbowl'
 import initListener from './listener'
+import Serve from 'electron-serve'
+import { SCHEME } from '../consts'
 
 /**
  * Set `__static` path to static files in production
@@ -23,7 +23,14 @@ let mainWindow: BrowserWindow | null
 
 let forceQuit = false
 
-async function createWindow(address: AddressInfo) {
+Serve({
+  scheme: SCHEME,
+  directory: app.getAppPath(),
+})
+
+const baseURL = `${SCHEME}://-`
+
+async function createWindow(baseURL: string) {
   mainWindow = new BrowserWindow({
     width: 460,
     height: 560,
@@ -43,9 +50,13 @@ async function createWindow(address: AddressInfo) {
     },
   })
 
-  const baseURL = `http://${address.address}:${address.port}`
+  mainWindow.setMenu(null)
+  mainWindow.setMenuBarVisibility(false)
+  mainWindow.setVisibleOnAllWorkspaces(true)
 
-  mainWindow.loadURL(baseURL)
+  initIpcHandler(mainWindow, { baseURL })
+
+  await mainWindow.loadURL(`${baseURL}/iframe.html?sub=quick-search.html`)
 
   mainWindow.on('closed', () => {
     mainWindow = null
@@ -70,24 +81,12 @@ async function createWindow(address: AddressInfo) {
   //   mainWindow?.show()
   // })
 
-  mainWindow.setMenu(null)
-  mainWindow.setMenuBarVisibility(false)
-  mainWindow.setVisibleOnAllWorkspaces(true)
-
-  initIpcHandler(mainWindow, { baseURL })
-
   return mainWindow
 }
 
 app.on('ready', async () => {
-  // TODO
-  const address = await initServe()
-  if (address) {
-    global.addressInfo = address
-    createWindow(address)
-  } else {
-    // TODO
-  }
+  const mainWindow = await createWindow(baseURL)
+
   initTray(mainWindow)
   // initSaladbowl()
   initListener(mainWindow)
@@ -105,7 +104,7 @@ app.on('before-quit', (e) => {
 
 app.on('activate', () => {
   if (mainWindow === null) {
-    createWindow(global.addressInfo)
+    createWindow(baseURL)
   }
 })
 

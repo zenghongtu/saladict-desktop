@@ -10,7 +10,7 @@ const initIpcHandler = (
 
     if (type === 'OPEN_URL') {
       const url = payload.url
-      const loadUrl = `${baseURL}/iframe.html?redirect=${url}`
+      const loadUrl = `${baseURL}/iframe.html?sub=${url}`
       windows.add(loadUrl, url.split('.html')[0])
     } else if (type === 'PIN_STATE') {
       global.isPinPanel = payload

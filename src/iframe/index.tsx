@@ -113,7 +113,7 @@ const main = async () => {
 
   const redirectUrl = query.get('redirect') || 'quick-search.html'
 
-  const src = `/${redirectUrl}?direct=true`
+  const src = `/${redirectUrl}`
 
   iframe = await loadIframe(src)
 
