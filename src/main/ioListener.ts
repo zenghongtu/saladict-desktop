@@ -4,7 +4,7 @@ import { getSelectedText } from './utils'
 
 let mouseDownAt: number = 0
 
-const initListener = (mainWin: BrowserWindow | null) => {
+const initIOListener = (mainWin: BrowserWindow | null) => {
   ioHook.on('mousedown', (event) => {
     mouseDownAt = +new Date()
   })
@@ -14,6 +14,7 @@ const initListener = (mainWin: BrowserWindow | null) => {
 
     if (+new Date() - mouseDownAt > 500 || clicks >= 2) {
       const text = await getSelectedText()
+
       mainWin?.webContents.send('search-word-message', { text })
       mainWin?.setPosition(x + 10, y + 10)
       mainWin?.show()
@@ -28,4 +29,4 @@ const initListener = (mainWin: BrowserWindow | null) => {
   })
 }
 
-export default initListener
+export default initIOListener

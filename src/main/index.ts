@@ -3,7 +3,7 @@ import initIpcHandler from './ipc'
 import path from 'path'
 import initTray from './tray'
 import initSaladbowl from './saladbowl'
-import initListener from './listener'
+import initIOListener from './ioListener'
 import Serve from 'electron-serve'
 import { SCHEME } from '../consts'
 
@@ -91,7 +91,7 @@ app.on('ready', async () => {
 
   initTray(mainWindow)
   // initSaladbowl()
-  initListener(mainWindow)
+  initIOListener(mainWindow)
 })
 
 app.on('window-all-closed', () => {
