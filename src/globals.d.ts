@@ -6,6 +6,7 @@ const __static: string
 declare namespace NodeJS {
   interface Global {
     __static: string
+    isPinPanel: boolean
     addressInfo: { address: string; family: string; port: number }
   }
   interface ProcessEnv {

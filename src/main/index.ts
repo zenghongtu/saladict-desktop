@@ -35,6 +35,7 @@ async function createWindow(address: AddressInfo) {
     useContentSize: true,
     frame: false,
     show: false,
+    alwaysOnTop: true,
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false,
@@ -60,7 +61,9 @@ async function createWindow(address: AddressInfo) {
   })
 
   mainWindow.on('blur', () => {
-    mainWindow?.hide()
+    if (!global.isPinPanel) {
+      mainWindow?.hide()
+    }
   })
 
   // mainWindow.on('ready-to-show', () => {

@@ -1,5 +1,5 @@
-import { BrowserWindow, ipcMain } from 'electron'
-import { windows } from './WindowManager'
+import {BrowserWindow, ipcMain} from 'electron'
+import {windows} from './WindowManager'
 
 const initIpcHandler = (
   mainWin: BrowserWindow,
@@ -12,6 +12,8 @@ const initIpcHandler = (
       const url = payload.url
       const loadUrl = `${baseURL}/iframe.html?redirect=${url}`
       windows.add(loadUrl, url.split('.html')[0])
+    } else if (type === 'PIN_STATE') {
+      global.isPinPanel = payload
     }
 
     return new Promise((resolve, reject) => {

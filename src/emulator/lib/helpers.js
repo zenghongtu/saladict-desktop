@@ -11,10 +11,11 @@ export const msgBgListeners = Symbol.for('fake_env_msgBackgroundListeners')
 export function runtimeSendMessage(listenersArea) {
   async function sendMessage(extensionId, message) {
     console.table(extensionId)
-    if (extensionId.type.includes('SELECTION')) {
+    const { type } = extensionId
+
+    if (type.includes('SELECTION')) {
       return Promise.resolve()
-    }
-    if (extensionId.type === 'OPEN_URL') {
+    } else if (['OPEN_URL', 'PIN_STATE'].includes(type)) {
       return ipcRenderer.invoke('sala-extension-message', extensionId)
     }
 
