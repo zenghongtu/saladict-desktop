@@ -1,5 +1,5 @@
 import './style.scss'
-import { store, triggerInputValueChangeEvent } from '../utils'
+import { triggerInputValueChangeEvent } from '../utils'
 import { remote, ipcRenderer } from 'electron'
 
 const loadIframe = async (src: string) => {
@@ -96,7 +96,7 @@ const handleWordEditorPage = (text: string) => {
 }
 
 ;(() => {
-  if (!store.get('VERSION')) {
+  if (!window.localStorage.getItem('VERSION')) {
     // @ts-ignore
     window.browser.runtime.onInstalled._listeners.forEach((listener) => {
       listener({ reason: '' })
@@ -104,7 +104,7 @@ const handleWordEditorPage = (text: string) => {
 
     const currentVersion = remote.app.getVersion()
 
-    store.set('VERSION', currentVersion)
+    window.localStorage.setItem('VERSION', currentVersion)
   }
 })()
 
