@@ -15,7 +15,9 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = path.join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
-app.dock.hide()
+if (process.env.NODE_ENV !== 'development') {
+  app.dock.hide()
+}
 
 let mainWindow: BrowserWindow | null
 
@@ -84,7 +86,7 @@ app.on('ready', async () => {
     // TODO
   }
   initTray(mainWindow)
-  initSaladbowl()
+  // initSaladbowl()
   initListener(mainWindow)
 })
 
