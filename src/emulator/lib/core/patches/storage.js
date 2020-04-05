@@ -1,9 +1,16 @@
 import _ from 'lodash'
 import { store } from '../../helpers'
+import { remote } from 'electron'
 
 const getFromLS = (key) => {
   return store.get(key) || {}
 }
+
+// TODO pref
+store.onDidAnyChange(() => {
+  const win = remote.getCurrentWindow()
+  !win.isFocused() && win.reload()
+})
 
 const storageData = Symbol.for('fake_env_storageData')
 
