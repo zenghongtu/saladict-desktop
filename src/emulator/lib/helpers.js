@@ -5,23 +5,41 @@ import Store from 'electron-store'
 
 export const store = new Store({
   accessPropertiesByDotNotation: false,
-  watch:true,
+  watch: true,
   name: `${remote.app.name}.config`,
 })
-
 
 export const msgPageListeners = Symbol.for('fake_env_msgPageListeners')
 export const msgBgListeners = Symbol.for('fake_env_msgBackgroundListeners')
 
+let lastSearchText = ''
+
 export function runtimeSendMessage(listenersArea) {
   async function sendMessage(extensionId, message) {
-    console.table(extensionId)
-    const { type } = extensionId
+    console.log(extensionId)
+
+    const { type, payload } = extensionId
 
     if (type.includes('SELECTION')) {
       return Promise.resolve()
     } else if (['OPEN_URL', 'PIN_STATE'].includes(type)) {
       return ipcRenderer.invoke('sala-extension-message', extensionId)
+    } else if (type === 'IS_IN_NOTEBOOK') {
+      // TODO
+      const text = payload.text
+      if (text !== lastSearchText) {
+        await sendMessage({
+          type: 'SAVE_WORD',
+          payload: {
+            area: 'history',
+            word: {
+              date: +new Date(),
+              text: text,
+            },
+          },
+        })
+        lastSearchText = text
+      }
     }
 
     return new Promise((resolve, reject) => {
