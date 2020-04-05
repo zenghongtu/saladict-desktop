@@ -63,9 +63,9 @@ async function createWindow(address: AddressInfo) {
     mainWindow?.hide()
   })
 
-  mainWindow.on('ready-to-show', () => {
-    mainWindow?.show()
-  })
+  // mainWindow.on('ready-to-show', () => {
+  //   mainWindow?.show()
+  // })
 
   mainWindow.setMenu(null)
   mainWindow.setMenuBarVisibility(false)
