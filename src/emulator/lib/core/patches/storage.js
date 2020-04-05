@@ -2,22 +2,34 @@ import _ from 'lodash'
 import { store } from '../../helpers'
 import { remote } from 'electron'
 
-const getFromLS = (key) => {
-  return store.get(key) || {}
-}
-
-// TODO pref
-store.onDidAnyChange(() => {
+store.onDidChange('sync', () => {
   const win = remote.getCurrentWindow()
   !win.isFocused() && win.reload()
 })
 
-const storageData = Symbol.for('fake_env_storageData')
+let cache = {}
+
+// For startup
+const getFromLS = (key) => {
+  const _cache = cache[key]
+
+  if (_cache && +new Date() - _cache.ts < 200) {
+    return _cache.data
+  }
+
+  const data = store.get(key) || {}
+
+  cache[key] = { ts: +new Date(), data }
+
+  return data
+}
+
+const storageData = Symbol.for('storageData')
 
 window[storageData] = {
-  local: getFromLS('local'),
-  sync: getFromLS('sync'),
-  managed: getFromLS('managed'),
+  local: {},
+  sync: {},
+  managed: {},
   listeners: [],
 }
 
