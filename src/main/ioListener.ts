@@ -15,6 +15,10 @@ const initIOListener = (mainWin: BrowserWindow | null) => {
     if (+new Date() - mouseDownAt > 500 || clicks >= 2) {
       const text = await getSelectedText()
 
+      if (!text) {
+        return
+      }
+
       mainWin?.webContents.send('search-word-message', { text })
       mainWin?.setPosition(x + 10, y + 10)
       mainWin?.show()
