@@ -7,6 +7,8 @@ import initListener from './listener'
 import Serve from 'electron-serve'
 import { SCHEME } from '../consts'
 
+global.shareVar = { isPinPanel: false }
+
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -72,7 +74,7 @@ async function createWindow(baseURL: string) {
   })
 
   mainWindow.on('blur', () => {
-    if (!global.isPinPanel) {
+    if (!global.shareVar.isPinPanel) {
       mainWindow?.hide()
     }
   })

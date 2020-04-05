@@ -13,7 +13,7 @@ const initIpcHandler = (
       const loadUrl = `${baseURL}/iframe.html?sub=${url}`
       windows.add(loadUrl, url.split('.html')[0])
     } else if (type === 'PIN_STATE') {
-      global.isPinPanel = payload
+      global.shareVar.isPinPanel = payload
     }
 
     return new Promise((resolve, reject) => {
