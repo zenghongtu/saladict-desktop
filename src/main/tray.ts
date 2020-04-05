@@ -8,6 +8,7 @@ import {
   MenuItem,
   shell,
   app,
+  clipboard,
 } from 'electron'
 // @ts-ignore
 import Positioner from 'electron-positioner'
@@ -25,8 +26,10 @@ const initTray = (mainWindow: BrowserWindow | null) => {
   tray.setPressedImage(trayImgPath)
 
   tray.on('click', (event, bounds) => {
-    mainWindow?.show()
+    const text = clipboard.readText('clipboard')
+    mainWindow?.webContents.send('search-word-message', { text })
     positioner.move('trayCenter', bounds)
+    mainWindow?.show()
   })
 
   const template: Array<MenuItemConstructorOptions | MenuItem> = [
