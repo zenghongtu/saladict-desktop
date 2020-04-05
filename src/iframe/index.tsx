@@ -1,6 +1,6 @@
 import './style.scss'
 import { store, triggerInputValueChangeEvent } from '../utils'
-import { remote } from 'electron'
+import { remote, ipcRenderer } from 'electron'
 
 const loadIframe = async (src: string) => {
   const iframe = document.createElement('iframe')
@@ -30,35 +30,46 @@ const handleQuickSearchPage = () => {
     '#root > div > div.dictPanel-Head > header',
   )
 
+  // TODO
   if (!dictHeadELe) {
     return
   }
 
-  ;(dictHeadELe.querySelector(
-    'button:nth-child(8)',
-  ) as HTMLButtonElement).style.display = 'none'
-  ;(dictHeadELe.querySelector(
-    'button:nth-child(9)',
-  ) as HTMLButtonElement).style.visibility = 'hidden'
-  ;(dictHeadELe.querySelector(
-    'button:nth-child(6)',
-  ) as HTMLButtonElement).addEventListener('click', (event) => {
-    event.preventDefault()
-    event.stopPropagation()
+  const searchInputEle = dictHeadELe.querySelector(
+    'div.menuBar-SearchBox_Wrap > input',
+  ) as HTMLInputElement
 
-    const inputEle = dictHeadELe.querySelector(
-      'div.menuBar-SearchBox_Wrap > input',
-    ) as HTMLInputElement
 
-    // @ts-ignore
-    window.browser.runtime.sendMessage({
-      type: 'OPEN_URL',
-      payload: {
-        url:
-          'word-editor.html?word=' + encodeURIComponent(inputEle.value || ''),
-        self: true,
-      },
-    })
+  dictHeadELe.addEventListener('click', (event) => {
+    let target = event.target as HTMLElement
+
+    if (target.nodeName !== 'BUTTON') {
+      target = target.parentElement as HTMLElement
+    }
+
+    const index = Array.from(dictHeadELe.children).indexOf(target)
+
+    // 6: notebook
+    // 9: close
+    if ([6, 9].includes(index)) {
+      event.preventDefault()
+      event.stopPropagation()
+
+      if (index === 6) {
+        // @ts-ignore
+        window.browser.runtime.sendMessage({
+          type: 'OPEN_URL',
+          payload: {
+            url:
+              'word-editor.html?word=' +
+              encodeURIComponent(searchInputEle.value || ''),
+            self: true,
+          },
+        })
+      } else {
+        // TODO
+      }
+    }
   })
 }
 
