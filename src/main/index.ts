@@ -30,7 +30,7 @@ async function createWindow(address: AddressInfo) {
     minimizable: false,
     maximizable: false,
     useContentSize: true,
-    // frame: false,
+    frame: false,
     show: false,
     webPreferences: {
       nodeIntegration: true,
