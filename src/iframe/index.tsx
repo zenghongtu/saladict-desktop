@@ -111,15 +111,15 @@ const handleWordEditorPage = (text: string) => {
 const main = async () => {
   const query = new URLSearchParams(window.location.search)
 
-  const redirectUrl = query.get('redirect') || 'quick-search.html'
+  const subUrl = query.get('sub') || 'quick-search.html'
 
-  const src = `/${redirectUrl}`
+  const src = `/${subUrl}`
 
   iframe = await loadIframe(src)
 
-  if (redirectUrl.startsWith('quick-search')) {
+  if (subUrl.startsWith('quick-search')) {
     handleQuickSearchPage()
-  } else if (redirectUrl.startsWith('word-editor')) {
+  } else if (subUrl.startsWith('word-editor')) {
     handleWordEditorPage(query.get('word') || '')
   }
 }
