@@ -14,21 +14,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const merge = require('webpack-merge')
 
-// https://github.com/zenghongtu/create-electron-react/issues/3
-// const whiteListedModules = ['react', 'react-dom'];
-
 const isProd = process.env.NODE_ENV === 'production'
 const isNotProd = process.env.NODE_ENV !== 'production'
 const srcPath = path.resolve('src')
 
 let baseConfig = {
-  devtool: '#cheap-module-eval-source-map',
-
-  // externals: [
-  //   ...Object.keys(dependencies || {}).filter(
-  //     d => !whiteListedModules.includes(d)
-  //   )
-  // ],
+  devtool: 'cheap-module-eval-source-map',
+  mode: isProd ? 'production' : 'development',
   watch: true,
   module: {
     rules: [

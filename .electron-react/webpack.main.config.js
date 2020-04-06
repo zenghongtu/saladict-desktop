@@ -8,21 +8,12 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 
-// https://github.com/zenghongtu/create-electron-react/issues/3
-// const whiteListedModules = ['']
-
-// const externals = [
-//   ...Object.keys(devDependencies || {}),
-//   ...Object.keys(dependencies || {}).filter(
-//     d => !whiteListedModules.includes(d)
-//   )
-// ]
-
 let mainConfig = {
+  devtool: 'cheap-module-eval-source-map',
   entry: {
     main: path.join(__dirname, '../src/main/index.ts'),
   },
-  // externals,
+  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
   module: {
     rules: [
       {
@@ -80,6 +71,7 @@ if (process.env.NODE_ENV !== 'production') {
  * Adjust mainConfig for production settings
  */
 if (process.env.NODE_ENV === 'production') {
+  mainConfig.devtool = ''
   mainConfig.optimization = {
     minimize: true,
     minimizer: [new TerserPlugin()],
