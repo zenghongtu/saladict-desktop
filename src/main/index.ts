@@ -1,13 +1,14 @@
 import { app, BrowserWindow, ipcMain, Tray, nativeImage } from 'electron'
-import initIpcHandler from './ipc'
 import path from 'path'
+import Serve from 'electron-serve'
+import initGlobalShareVars from './shareVars'
+import initIpcHandler from './ipc'
 import initTray from './tray'
 import initSaladbowl from './saladbowl'
 import initIOListener from './ioListener'
-import Serve from 'electron-serve'
 import { SCHEME } from '../consts'
 
-global.shareVar = { isPinPanel: false }
+initGlobalShareVars()
 
 /**
  * Set `__static` path to static files in production
@@ -74,7 +75,7 @@ async function createWindow(baseURL: string) {
   })
 
   mainWindow.on('blur', () => {
-    if (!global.shareVar.isPinPanel) {
+    if (!global.shareVars.isPinPanel) {
       mainWindow?.hide()
     }
   })

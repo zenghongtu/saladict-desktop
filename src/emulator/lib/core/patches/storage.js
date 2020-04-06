@@ -1,10 +1,19 @@
 import _ from 'lodash'
-import { remote } from 'electron'
+import { remote, ipcRenderer } from 'electron'
 import { store } from '../../../../store'
 
-store.onDidChange('sync', () => {
+store.onDidChange('sync', (newValue) => {
+  if (!newValue) {
+    console.error("store.onDidChange can't get new value")
+    return
+  }
+
   const win = remote.getCurrentWindow()
-  !win.isFocused() && win.reload()
+  if (!win.isFocused()) {
+    win.reload()
+  } else {
+    ipcRenderer.send('sala-config-change-message', newValue.baseconfig.d)
+  }
 })
 
 const getDataFromStore = (key) => {
