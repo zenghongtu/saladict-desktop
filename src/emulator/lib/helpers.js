@@ -5,7 +5,7 @@ import { ipcRenderer, remote } from 'electron'
 export const msgPageListeners = Symbol.for('fake_env_msgPageListeners')
 export const msgBgListeners = Symbol.for('fake_env_msgBackgroundListeners')
 
-let lastSearchText = ''
+let __lastSearchText = ''
 
 export function runtimeSendMessage(listenersArea) {
   async function sendMessage(extensionId, message) {
@@ -18,20 +18,21 @@ export function runtimeSendMessage(listenersArea) {
     } else if (['OPEN_URL', 'PIN_STATE'].includes(type)) {
       return ipcRenderer.invoke('sala-extension-message', extensionId)
     } else if (type === 'IS_IN_NOTEBOOK') {
-      // TODO
       const text = payload.text
-      if (text !== lastSearchText) {
-        await sendMessage({
-          type: 'SAVE_WORD',
-          payload: {
-            area: 'history',
-            word: {
-              date: +new Date(),
-              text: text,
+      if (text && remote.getGlobal('shareVars').searhHistory) {
+        if (text !== __lastSearchText) {
+          await sendMessage({
+            type: 'SAVE_WORD',
+            payload: {
+              area: 'history',
+              word: {
+                date: +new Date(),
+                text: text,
+              },
             },
-          },
-        })
-        lastSearchText = text
+          })
+          __lastSearchText = text
+        }
       }
     }
 
