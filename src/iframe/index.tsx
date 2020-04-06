@@ -73,7 +73,7 @@ const handleQuickSearchPage = () => {
           },
         })
       } else {
-        if (remote.getGlobal('shareVar').isPinPanel) {
+        if (remote.getGlobal('shareVars').isPinPanel) {
           ;(dictHeadELe.children[8] as HTMLElement)?.click()
 
           setTimeout(() => {
