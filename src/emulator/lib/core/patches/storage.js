@@ -7,45 +7,24 @@ store.onDidChange('sync', () => {
   !win.isFocused() && win.reload()
 })
 
-let cache = {}
-
-// For startup
-const getFromLS = (key) => {
-  const _cache = cache[key]
-
-  if (_cache && +new Date() - _cache.ts < 200) {
-    return _cache.data
-  }
-
-  const data = store.get(key) || {}
-
-  cache[key] = { ts: +new Date(), data }
-
-  return data
+const getDataFromStore = (key) => {
+  return store.get(key) || {}
 }
 
 const storageData = Symbol.for('storageData')
 
 window[storageData] = {
-  local: {},
-  sync: {},
-  managed: {},
+  local: getDataFromStore('local'),
+  sync: getDataFromStore('sync'),
+  managed: getDataFromStore('managed'),
   listeners: [],
 }
 
 window[storageData] = new Proxy(window[storageData], {
-  get: (target, p, receiver) => {
-    if (['local', 'sync', 'managed'].includes(p)) {
-      return getFromLS(p)
-    }
-
-    return Reflect.get(target, p)
-  },
   set: (target, p, value, receiver) => {
     if (['local', 'sync', 'managed'].includes(p)) {
       try {
         store.set(p, value)
-        return true
       } catch (err) {
         console.error(`proxy set ${p} execute error: `, err)
         return false
