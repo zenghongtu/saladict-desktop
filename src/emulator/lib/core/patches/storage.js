@@ -1,6 +1,6 @@
 import _ from 'lodash'
-import { store } from '../../helpers'
 import { remote } from 'electron'
+import { store } from '../../../../store'
 
 store.onDidChange('sync', () => {
   const win = remote.getCurrentWindow()

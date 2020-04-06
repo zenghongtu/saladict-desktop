@@ -1,13 +1,6 @@
 import _ from 'lodash'
 import sinon from 'sinon'
 import { ipcRenderer, remote } from 'electron'
-import Store from 'electron-store'
-
-export const store = new Store({
-  accessPropertiesByDotNotation: false,
-  watch: true,
-  name: `${remote.app.name}.config`,
-})
 
 export const msgPageListeners = Symbol.for('fake_env_msgPageListeners')
 export const msgBgListeners = Symbol.for('fake_env_msgBackgroundListeners')
