@@ -7,6 +7,7 @@ import initTray from './tray'
 import initSaladbowl from './saladbowl'
 import initIOListener from './ioListener'
 import { SCHEME } from '../consts'
+import { emitter } from './utils'
 
 initGlobalShareVars()
 
@@ -35,10 +36,8 @@ const baseURL = `${SCHEME}://-`
 
 async function createWindow(baseURL: string) {
   mainWindow = new BrowserWindow({
-    width: 460,
-    height: 560,
-    minWidth: 460,
-    minHeight: 560,
+    width: global.shareVars.panelWidth || 450,
+    resizable: false,
     fullscreenable: false,
     minimizable: false,
     maximizable: false,
@@ -83,6 +82,11 @@ async function createWindow(baseURL: string) {
   // mainWindow.on('ready-to-show', () => {
   //   mainWindow?.show()
   // })
+
+  emitter.on('panelWidth', (width) => {
+    const { height = 550 } = mainWindow?.getBounds() || {}
+    mainWindow?.setSize(width, height, false)
+  })
 
   return mainWindow
 }
