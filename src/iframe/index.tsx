@@ -75,13 +75,11 @@ const handleQuickSearchPage = () => {
       } else {
         if (remote.getGlobal('shareVars').isPinPanel) {
           ;(dictHeadELe.children[8] as HTMLElement)?.click()
-
-          setTimeout(() => {
-            remote.getCurrentWindow().hide()
-          }, 150)
-        } else {
-          remote.getCurrentWindow().hide()
         }
+
+        setTimeout(() => {
+          remote.getCurrentWindow().blur()
+        }, 100)
       }
     }
   })
