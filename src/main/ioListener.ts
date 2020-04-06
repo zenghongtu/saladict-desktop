@@ -14,14 +14,6 @@ const initIOListener = (
   mainWin: BrowserWindow | null,
   saladbowlWin: BrowserWindow | null,
 ) => {
-  ioHook.on('mousedown', (event) => {
-    if (event.button === 1) {
-      mouseDownAt = +new Date()
-    } else {
-      mouseDownAt = 0
-    }
-  })
-
   ioHook.on('keydown', (event) => {
     const keyName = Object.keys(event).find((_key) => event[_key] === true)
 
@@ -41,6 +33,14 @@ const initIOListener = (
 
   ioHook.on('keyup', () => {
     isHolding = false
+  })
+
+  ioHook.on('mousedown', (event) => {
+    if (event.button === 1) {
+      mouseDownAt = +new Date()
+    } else {
+      mouseDownAt = 0
+    }
   })
 
   // TODO compare x / y
@@ -70,6 +70,7 @@ const initIOListener = (
       const text = await getSelectedText()
       global.shareVars.selectedText = text || ''
 
+      console.log(_mode)
       if (!text) {
         console.error('Get selected text failed!')
         return
@@ -80,13 +81,13 @@ const initIOListener = (
       const _x = x + bowlOffsetX
       const _y = y + bowlOffsetY
 
-      if (_mode.direct || _mode.holding) {
-        mainWin?.setPosition(_x, _y)
+      if (_mode.direct || isHolding) {
+        !isPinPanel && mainWin?.setPosition(_x, _y)
         mainWin?.show()
         return
       }
 
-      if (_mode.icon) {
+      if (_mode.icon && !isPinPanel) {
         saladbowlWin?.setPosition(_x, _y)
         saladbowlWin?.show()
         mainWin?.setPosition(_x + 40, _y)
