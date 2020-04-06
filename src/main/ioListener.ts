@@ -7,33 +7,44 @@ import click = Simulate.click
 // for ioHook start or load
 let hasRun = false
 
+let isListenHolding = false
 let isHolding = false
+
 let mouseDownAt: number = 0
 
 const initIOListener = (
   mainWin: BrowserWindow | null,
   saladbowlWin: BrowserWindow | null,
 ) => {
-  ioHook.on('keydown', (event) => {
-    const keyName = Object.keys(event).find((_key) => event[_key] === true)
+  const setListenKeyHolding = () => {
+    ioHook.on('keydown', (event) => {
 
-    if (keyName) {
-      const { mode, pinMode, isPinPanel } = global.shareVars
-      const { holding: _holding } = isPinPanel ? pinMode : mode
+      const keyName = Object.keys(event).find((_key) => event[_key] === true)
 
-      if (
-        (Object.keys(_holding) as (keyof typeof _holding)[])
-          .filter((key) => _holding[key])
-          .includes(keyName.slice(0, -3) as keyof typeof _holding)
-      ) {
-        isHolding = true
+      if (keyName) {
+        const { mode, pinMode, isPinPanel } = global.shareVars
+        const { holding: _holding } = isPinPanel ? pinMode : mode
+
+        if (
+          (Object.keys(_holding) as (keyof typeof _holding)[])
+            .filter((key) => _holding[key])
+            .includes(keyName.slice(0, -3) as keyof typeof _holding)
+        ) {
+          isHolding = true
+        }
       }
-    }
-  })
+    })
 
-  ioHook.on('keyup', () => {
-    isHolding = false
-  })
+    ioHook.on('keyup', () => {
+      isHolding = false
+    })
+  }
+
+  const removeListenKeyHolding = () => {
+    ioHook.removeAllListeners('keydown')
+
+    ioHook.removeAllListeners('keyup')
+  }
 
   ioHook.on('mousedown', (event) => {
     if (event.button === 1) {
@@ -62,6 +73,7 @@ const initIOListener = (
       _mode = pinMode as typeof mode
     }
 
+
     if (
       (mouseDownAt && +new Date() - mouseDownAt >= doubleClickDelay) ||
       (_mode.double && clicks >= 2) ||
@@ -70,7 +82,6 @@ const initIOListener = (
       const text = await getSelectedText()
       global.shareVars.selectedText = text || ''
 
-      console.log(_mode)
       if (!text) {
         console.error('Get selected text failed!')
         return
@@ -118,6 +129,22 @@ const initIOListener = (
 
   emitter.on('active', (enable) => {
     enable ? runHook() : destroyHook()
+  })
+
+  if (Object.values(global.shareVars.mode.holding).some((val) => val)) {
+    setListenKeyHolding()
+    isListenHolding = true
+  }
+
+  emitter.on('mode', (data) => {
+
+    if (Object.values(data.holding).some((val) => val) && !isListenHolding) {
+      setListenKeyHolding()
+      isListenHolding = true
+    } else {
+      removeListenKeyHolding()
+      isListenHolding = false
+    }
   })
 
   if (global.shareVars.active) {
