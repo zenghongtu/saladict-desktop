@@ -26,7 +26,8 @@ const initIOListener = (
     const keyName = Object.keys(event).find((_key) => event[_key] === true)
 
     if (keyName) {
-      const _holding = global.shareVars.mode.holding
+      const { mode, pinMode, isPinPanel } = global.shareVars
+      const { holding: _holding } = isPinPanel ? pinMode : mode
 
       if (
         (Object.keys(_holding) as (keyof typeof _holding)[])
@@ -52,11 +53,18 @@ const initIOListener = (
       pinMode,
       bowlOffsetX,
       bowlOffsetY,
+      isPinPanel,
     } = global.shareVars
+
+    let _mode = mode
+
+    if (isPinPanel) {
+      _mode = pinMode as typeof mode
+    }
 
     if (
       (mouseDownAt && +new Date() - mouseDownAt >= doubleClickDelay) ||
-      (mode.double && clicks >= 2) ||
+      (_mode.double && clicks >= 2) ||
       isHolding
     ) {
       const text = await getSelectedText()
@@ -72,13 +80,13 @@ const initIOListener = (
       const _x = x + bowlOffsetX
       const _y = y + bowlOffsetY
 
-      if (mode.direct || mode.holding) {
+      if (_mode.direct || _mode.holding) {
         mainWin?.setPosition(_x, _y)
         mainWin?.show()
         return
       }
 
-      if (mode.icon) {
+      if (_mode.icon) {
         saladbowlWin?.setPosition(_x, _y)
         saladbowlWin?.show()
         mainWin?.setPosition(_x + 40, _y)
