@@ -10,7 +10,12 @@ const initGlobalShareVars = () => {
     config = inflateData<AppConfig>(baseConfig)
   }
 
-  const shareVars = { ...config, isPinPanel: false } as ShareVars
+  const shareVars = {
+    ...config,
+    isPinPanel: false,
+    selectedText: '',
+    mainWindowId: 0,
+  } as ShareVars
 
   global.shareVars = new Proxy(shareVars, {
     set: (target, p: keyof ShareVars, value, receiver) => {

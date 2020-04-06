@@ -88,6 +88,8 @@ async function createWindow(baseURL: string) {
     mainWindow?.setSize(width, height, false)
   })
 
+  global.shareVars.mainWindowId = mainWindow.id
+
   return mainWindow
 }
 
@@ -95,8 +97,8 @@ app.on('ready', async () => {
   const mainWindow = await createWindow(baseURL)
 
   initTray(mainWindow)
-  // initSaladbowl()
-  initIOListener(mainWindow)
+  const saladbowlWindow = initSaladbowl(mainWindow)
+  initIOListener(mainWindow, saladbowlWindow)
 })
 
 app.on('window-all-closed', () => {

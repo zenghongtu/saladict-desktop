@@ -2,7 +2,7 @@ import { BrowserWindow } from 'electron'
 
 let saladbowlWindow: BrowserWindow | null
 
-const initSaladbowl = () => {
+const initSaladbowl = (mainWindow: BrowserWindow | null) => {
   saladbowlWindow = new BrowserWindow({
     width: 30,
     height: 30,
@@ -12,6 +12,7 @@ const initSaladbowl = () => {
     maxHeight: 30,
     alwaysOnTop: true,
     autoHideMenuBar: true,
+    acceptFirstMouse: true,
     hasShadow: false,
     transparent: true,
     frame: false,
@@ -20,18 +21,26 @@ const initSaladbowl = () => {
     minimizable: false,
     maximizable: false,
     resizable: false,
-    webPreferences: { nodeIntegration: true },
+    webPreferences: {
+      nodeIntegration: true,
+    },
   })
 
   saladbowlWindow.loadFile('./saladbowl.html')
 
-  saladbowlWindow.on('ready-to-show', () => {
-    saladbowlWindow?.show()
-  })
+  // saladbowlWindow.on('ready-to-show', () => {
+  //   saladbowlWindow?.show()
+  // })
 
   saladbowlWindow.on('closed', () => {
     saladbowlWindow = null
   })
+
+  saladbowlWindow.on('blur', () => {
+    saladbowlWindow?.hide()
+  })
+
+  return saladbowlWindow
 }
 
 export default initSaladbowl

@@ -10,7 +10,7 @@ export const getSelectedText = () => {
     robot.keyTap('c', 'command')
 
     setTimeout(() => {
-      const content = clipboard.readText('clipboard')
+      const content = clipboard.readText('clipboard') || ''
       clipboard.writeText(lastText)
 
       resolve(content)

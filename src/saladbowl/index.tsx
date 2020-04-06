@@ -5,12 +5,32 @@ import './style.scss'
 import { remote } from 'electron'
 
 const Saladbowl = () => {
-  const handleClick = () => {
+  const next = () => {
+    const mainWinId = remote.getGlobal('shareVars').mainWindowId
+    if (!mainWinId) {
+      return
+    }
     remote.getCurrentWindow().hide()
+    remote.BrowserWindow.fromId(mainWinId)?.show()
+  }
+
+  const handleClick = () => {
+    next()
+  }
+
+  const handleMouseEnter = () => {
+    const isHover = remote.getGlobal('shareVars').bowlHover
+    if (isHover) {
+      next()
+    }
   }
 
   return (
-    <div className="saladbowl" onClick={handleClick}>
+    <div
+      className="saladbowl"
+      onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+    >
       <svg viewBox="0 0 612 612" width="30" height="30">
         <g className="saladbowl-leaf">
           <path

@@ -6,6 +6,8 @@ const __static: string
 
 interface ShareVars extends AppConfig {
   isPinPanel: boolean
+  selectedText: string
+  mainWindowId?: number
 }
 
 declare namespace NodeJS {
