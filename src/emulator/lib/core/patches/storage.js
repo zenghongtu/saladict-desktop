@@ -2,19 +2,21 @@ import _ from 'lodash'
 import { remote, ipcRenderer } from 'electron'
 import { store } from '../../../../store'
 
-store.onDidChange('sync', (newValue) => {
-  if (!newValue) {
-    console.error("store.onDidChange can't get new value")
-    return
-  }
+setTimeout(() => {
+  store.onDidChange('sync', (newValue, oldValue) => {
+    if (!newValue) {
+      console.error("store.onDidChange can't get new value")
+      return
+    }
 
-  const win = remote.getCurrentWindow()
-  if (!win.isFocused()) {
-    win.reload()
-  } else {
-    ipcRenderer.send('sala-config-change-message', newValue.baseconfig.d)
-  }
-})
+    const win = remote.getCurrentWindow()
+    if (!win.isFocused()) {
+      win.reload()
+    } else {
+      ipcRenderer.send('sala-config-change-message', newValue.baseconfig.d)
+    }
+  })
+}, 1000)
 
 const getDataFromStore = (key) => {
   return store.get(key) || {}
