@@ -4,6 +4,7 @@
 #root > section > section > aside > div > ul > li:nth-child(7),
 #root > section > section > aside > div > ul > li:nth-child(8),
 #root > section > section > aside > div > ul > li:nth-child(9),
+#root > section > section > aside > div > ul > li:nth-child(10),
 #root > section > section > aside > div > ul > li:nth-child(11) {
   display: none;
 }
