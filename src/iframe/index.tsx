@@ -103,10 +103,10 @@ const handleWordEditorPage = (text: string) => {
 
 ;(() => {
   if (!window.localStorage.getItem('VERSION')) {
-    // @ts-ignore
-    window.browser.runtime.onInstalled._listeners.forEach((listener) => {
-      listener({ reason: '' })
-    })
+    // init in main progress
+    // window.browser.runtime.onInstalled._listeners.forEach((listener) => {
+    //   listener({ reason: '' })
+    // })
 
     const currentVersion = remote.app.getVersion()
 

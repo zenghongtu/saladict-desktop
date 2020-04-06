@@ -1,14 +1,22 @@
+import fs from 'fs'
 import { emitter, inflateData } from './utils'
 import { store } from '../store'
 
 const initGlobalShareVars = () => {
-  const baseConfig = store.get('sync.baseconfig.d')
+  let baseConfig = store.get('sync.baseconfig.d')
 
-  let config: any = {}
+  if (!baseConfig) {
+    const defaultConfig = require('./defaultConfig.json')
 
-  if (baseConfig) {
-    config = inflateData<AppConfig>(baseConfig)
+    // TODO modify somethings
+    fs.writeFileSync(store.path, JSON.stringify(defaultConfig), {
+      encoding: 'utf8',
+    })
+
+    baseConfig = defaultConfig.sync.baseconfig.d
   }
+
+  let config = inflateData<AppConfig>(baseConfig)
 
   const shareVars = {
     ...config,
