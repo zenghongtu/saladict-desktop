@@ -252,7 +252,7 @@ const iframeConfig = merge(baseConfig, {
   ],
 })
 
-const saladbowlConfig = merge(rendererConfig, {
+const saladbowlConfig = merge(baseConfig, {
   entry: {
     saladbowl: path.join(__dirname, '../src/saladbowl/index.tsx'),
   },
@@ -287,4 +287,15 @@ const saladbowlConfig = merge(rendererConfig, {
   ],
 })
 
-module.exports = [rendererConfig, iframeConfig, saladbowlConfig]
+const emulatorConfig = merge(baseConfig, {
+  entry: {
+    core: path.resolve(srcPath, 'emulator/lib/core/index.js'),
+    background: path.resolve(srcPath, 'emulator/lib/background/index.js'),
+  },
+  output: {
+    filename: '[name].js',
+    path: path.resolve(__dirname, '../dist/electron/emulator/dist'),
+  },
+})
+
+module.exports = [rendererConfig, iframeConfig, saladbowlConfig, emulatorConfig]
