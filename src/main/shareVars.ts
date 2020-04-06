@@ -20,10 +20,10 @@ const initGlobalShareVars = () => {
   global.shareVars = new Proxy(shareVars, {
     set: (target, p: keyof ShareVars, value, receiver) => {
       emitter.emit(p, value)
-      // TODO
-      if (typeof target[p] === 'undefined') {
-        return false
-      }
+
+      // if (typeof target[p] === 'undefined' || typeof value === 'undefined') {
+      //   return false
+      // }
       ;(target as any)[p] = value
 
       console.log('set ', p, '=', value)
