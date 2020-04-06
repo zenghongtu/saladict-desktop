@@ -26,6 +26,10 @@ const initSaladbowl = (mainWindow: BrowserWindow | null) => {
     },
   })
 
+  saladbowlWindow.setMenu(null)
+  saladbowlWindow.setMenuBarVisibility(false)
+  saladbowlWindow.setVisibleOnAllWorkspaces(true)
+
   saladbowlWindow.loadFile('./saladbowl.html')
 
   // saladbowlWindow.on('ready-to-show', () => {
