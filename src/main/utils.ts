@@ -7,7 +7,16 @@ import pako from 'pako'
 export const getSelectedText = () => {
   return new Promise<string>((resolve, reject) => {
     const lastText = clipboard.readText('clipboard')
-    robot.keyTap('c', 'command')
+
+    const platform = process.platform
+
+    if (platform === 'darwin') {
+      robot.keyTap('c', 'command')
+    } else if (platform === 'win32') {
+      robot.keyTap('c', 'ctrl')
+    } else {
+      robot.keyTap('c', ['ctrl', 'shift'])
+    }
 
     setTimeout(() => {
       const content = clipboard.readText('clipboard') || ''
