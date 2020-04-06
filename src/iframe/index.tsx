@@ -78,8 +78,8 @@ const handleQuickSearchPage = () => {
         }
 
         setTimeout(() => {
-          remote.getCurrentWindow().blur()
-        }, 100)
+          remote.getCurrentWindow().hide()
+        }, 200)
       }
     }
   })
