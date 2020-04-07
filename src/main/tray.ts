@@ -34,6 +34,15 @@ const initTray = (mainWindow: BrowserWindow | null) => {
 
   const template: Array<MenuItemConstructorOptions | MenuItem> = [
     {
+      label: '开机启动',
+      type: 'checkbox',
+      checked: app.getLoginItemSettings().openAtLogin,
+      click: (item) => {
+        const { checked } = item
+        app.setLoginItemSettings({ openAtLogin: checked })
+      },
+    },
+    {
       label: '反馈建议',
       click: () => {
         shell.openExternal(
