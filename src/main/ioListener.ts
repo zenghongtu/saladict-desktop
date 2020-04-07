@@ -1,8 +1,6 @@
 import ioHook from 'iohook'
 import { app, BrowserWindow } from 'electron'
 import { emitter, getSelectedText } from './utils'
-import { Simulate } from 'react-dom/test-utils'
-import click = Simulate.click
 
 // for ioHook start or load
 let hasRun = false
@@ -18,7 +16,6 @@ const initIOListener = (
 ) => {
   const setListenKeyHolding = () => {
     ioHook.on('keydown', (event) => {
-
       const keyName = Object.keys(event).find((_key) => event[_key] === true)
 
       if (keyName) {
@@ -73,12 +70,14 @@ const initIOListener = (
       _mode = pinMode as typeof mode
     }
 
-
     if (
       (mouseDownAt && +new Date() - mouseDownAt >= doubleClickDelay) ||
       (_mode.double && clicks >= 2) ||
       isHolding
     ) {
+      // fix: getSelectedText will set isHolding = false
+      let _isHolding = isHolding
+
       const text = await getSelectedText()
       global.shareVars.selectedText = text || ''
 
@@ -92,7 +91,7 @@ const initIOListener = (
       const _x = x + bowlOffsetX
       const _y = y + bowlOffsetY
 
-      if (_mode.direct || isHolding) {
+      if (_mode.direct || _isHolding) {
         !isPinPanel && mainWin?.setPosition(_x, _y)
         mainWin?.show()
         return
@@ -137,7 +136,6 @@ const initIOListener = (
   }
 
   emitter.on('mode', (data) => {
-
     if (Object.values(data.holding).some((val) => val) && !isListenHolding) {
       setListenKeyHolding()
       isListenHolding = true
