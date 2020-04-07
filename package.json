@@ -45,11 +45,11 @@
         "zip"
       ],
       "category": "public.app-category.development",
-      "icon": "build/icons/icon.icns",
+      "icon": "build/icons/mac/icon.icns",
       "darkModeSupport": true
     },
     "win": {
-      "icon": "build/icons/icon.ico",
+      "icon": "build/icons/win/icon.ico",
       "target": [
         {
           "target": "nsis",
@@ -85,7 +85,7 @@
       ]
     },
     "linux": {
-      "icon": "build/icons",
+      "icon": "build/icons/png",
       "target": [
         "deb"
       ],
