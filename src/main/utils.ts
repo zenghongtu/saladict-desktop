@@ -12,10 +12,8 @@ export const getSelectedText = () => {
 
     if (platform === 'darwin') {
       robot.keyTap('c', 'command')
-    } else if (platform === 'win32') {
-      robot.keyTap('c', 'ctrl')
     } else {
-      robot.keyTap('c', ['ctrl', 'shift'])
+      robot.keyTap('c', 'ctrl')
     }
 
     setTimeout(() => {
