@@ -27,6 +27,24 @@ export const getSelectedText = () => {
   })
 }
 
+export const watchClipboard = ({
+  watchDelay = 1000,
+  onTextChange = (text: string) => {},
+}) => {
+  let lastText = clipboard.readText()
+
+  const intervalId = setInterval(() => {
+    const text = clipboard.readText()
+
+    if (lastText !== text) {
+      onTextChange(text)
+      lastText = text
+    }
+  }, watchDelay)
+
+  return () => clearInterval(intervalId)
+}
+
 export const getChangeKeys = (a: any, b: any, blacklist: string[] = []) => {
   return Object.keys(a).filter((key) => {
     return !blacklist.includes(key) && !equal(a[key], b[key])

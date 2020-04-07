@@ -9,12 +9,14 @@ import {
   shell,
   app,
   clipboard,
+  Rectangle,
 } from 'electron'
 // @ts-ignore
 import Positioner from 'electron-positioner'
 
-let positioner: Positioner | null
-let tray: Tray | null
+export let positioner: Positioner | null
+export let tray: Tray | null
+export let bounds: Rectangle
 
 const initTray = (mainWindow: BrowserWindow | null) => {
   positioner = new Positioner(mainWindow)
@@ -25,11 +27,13 @@ const initTray = (mainWindow: BrowserWindow | null) => {
 
   tray.setPressedImage(trayImgPath)
 
-  tray.on('click', (event, bounds) => {
+  // TODO some bugs
+  tray.on('click', (event, _bounds) => {
     const text = clipboard.readText('clipboard')
     mainWindow?.webContents.send('search-word-message', { text })
-    positioner.move('trayCenter', bounds)
+    positioner.move('trayCenter', _bounds)
     mainWindow?.show()
+    bounds = _bounds
   })
 
   const template: Array<MenuItemConstructorOptions | MenuItem> = [
@@ -40,6 +44,14 @@ const initTray = (mainWindow: BrowserWindow | null) => {
       click: (item) => {
         const { checked } = item
         app.setLoginItemSettings({ openAtLogin: checked })
+      },
+    },
+    {
+      label: '监听剪切板',
+      type: 'checkbox',
+      checked: global.shareVars.listenClipboard,
+      click: (item) => {
+        global.shareVars.listenClipboard = item.checked
       },
     },
     {

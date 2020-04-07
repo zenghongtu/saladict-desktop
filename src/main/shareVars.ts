@@ -18,19 +18,19 @@ const initGlobalShareVars = () => {
     baseConfig = defaultConfig.sync.baseconfig.d
   }
 
-  let config = inflateData<AppConfig>(baseConfig)
+  let saladictConfig = inflateData<AppConfig>(baseConfig)
 
+  const { openSaladict, listenClipboard } = store.get('config') || {}
   const shareVars = {
-    ...config,
+    ...saladictConfig,
     isPinPanel: false,
     selectedText: '',
     mainWindowId: 0,
-    openSaladict:
-      store.get('config.openSaladict') ||
-      DEFAULT_GLOBAL_SHORTCUTS['openSaladict'],
+    openSaladict: openSaladict || DEFAULT_GLOBAL_SHORTCUTS['openSaladict'],
+    listenClipboard: listenClipboard || false,
   } as ShareVars
 
-  const whitelist = ['openSaladict']
+  const whitelist = ['openSaladict', 'listenClipboard']
 
   global.shareVars = new Proxy(shareVars, {
     set: (target, p: keyof ShareVars, value, receiver) => {

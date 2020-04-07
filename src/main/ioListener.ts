@@ -1,6 +1,6 @@
 import ioHook from 'iohook'
-import { app, BrowserWindow } from 'electron'
-import { emitter, getSelectedText } from './utils'
+import { app, BrowserWindow, clipboard } from 'electron'
+import { emitter, getSelectedText, watchClipboard } from './utils'
 
 // for ioHook start or load
 let hasRun = false
@@ -9,6 +9,8 @@ let isListenHolding = false
 let isHolding = false
 
 let mouseDownAt: number = 0
+
+let stopWatch: Function | null
 
 const initIOListener = (
   mainWin: BrowserWindow | null,
@@ -148,6 +150,30 @@ const initIOListener = (
   if (global.shareVars.active) {
     runHook()
   }
+
+  const handleTextChange = (text: string) => {
+    mainWin?.show()
+    mainWin?.webContents.send('search-word-message', { text })
+  }
+
+  const startWatch = () => {
+    stopWatch = watchClipboard({ onTextChange: handleTextChange })
+  }
+
+  if (global.shareVars.listenClipboard) {
+    startWatch()
+  }
+
+  emitter.on('listenClipboard', (enable) => {
+    if (enable) {
+      startWatch()
+    } else {
+      if (stopWatch) {
+        stopWatch()
+        stopWatch = null
+      }
+    }
+  })
 
   app.on('will-quit', () => {
     destroyHook()
