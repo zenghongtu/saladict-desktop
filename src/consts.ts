@@ -14,6 +14,11 @@ export const unlessAppConfigFields = [
   'contextMenus',
 ]
 
+export const DEFAULT_GLOBAL_SHORTCUTS = {
+  openSaladict: 'CommandOrControl+Alt+X',
+  clipboardListen: 'CommandOrControl+Alt+C',
+}
+
 export const defaultSalaAppConfig: AppConfig = {
   version: 12,
   active: true,

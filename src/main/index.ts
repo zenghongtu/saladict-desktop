@@ -8,6 +8,7 @@ import initSaladbowl from './saladbowl'
 import initIOListener from './ioListener'
 import { SCHEME } from '../consts'
 import { emitter } from './utils'
+import initShortcuts from './shortcut'
 
 initGlobalShareVars()
 
@@ -99,6 +100,7 @@ app.on('ready', async () => {
   initTray(mainWindow)
   const saladbowlWindow = initSaladbowl(mainWindow)
   initIOListener(mainWindow, saladbowlWindow)
+  initShortcuts(mainWindow)
 })
 
 app.on('window-all-closed', () => {

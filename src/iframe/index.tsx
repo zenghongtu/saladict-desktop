@@ -101,6 +101,33 @@ const handleWordEditorPage = (text: string) => {
   }, 500)
 }
 
+const handleOptionsPage = () => {
+  iframe.contentDocument?.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement
+    if (
+      target?.tagName === 'BUTTON' &&
+      ['設定快速鍵', '设置快捷键', '设置快捷键'].includes(target?.innerText)
+    ) {
+      ipcRenderer.send('show-shortcut-window-message')
+    }
+
+    // const target = event.target as HTMLElement
+    // if (target?.tagName === 'BUTTON' && target?.id.startsWith('config')) {
+    //   const name = target.id.split('#')[1]
+    //   const enable = (target as HTMLInputElement)?.checked
+    //   ipcRenderer.send('config-change-message', { name, value: enable })
+    // }
+  })
+  // iframe.contentDocument?.addEventListener('change', (event) => {
+  //   const target = event.target as HTMLElement
+  //   if (target?.tagName === 'INPUT' && target?.id.startsWith('config')) {
+  //     const name = target.id.split('#')[1]
+  //     const value = (target as HTMLInputElement)?.value
+  //     ipcRenderer.send('config-change-message', { name, value })
+  //   }
+  // })
+}
+
 ;(() => {
   if (!window.localStorage.getItem('VERSION')) {
     // init in main progress
@@ -127,6 +154,8 @@ const main = async () => {
     handleQuickSearchPage()
   } else if (subUrl.startsWith('word-editor')) {
     handleWordEditorPage(query.get('word') || '')
+  } else if (subUrl.startsWith('options')) {
+    handleOptionsPage()
   }
 }
 

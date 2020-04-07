@@ -8,6 +8,8 @@ interface ShareVars extends AppConfig {
   isPinPanel: boolean
   selectedText: string
   mainWindowId?: number
+  openSaladict: string
+  [key: string]: any
 }
 
 declare namespace NodeJS {
