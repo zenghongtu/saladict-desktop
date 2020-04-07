@@ -139,6 +139,7 @@
     "electron-rebuild": "^1.10.1",
     "electron-serve": "^1.0.0",
     "electron-store": "^5.1.1",
+    "electron-updater": "^4.2.5",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "enzyme-to-json": "^3.4.4",
