@@ -20,7 +20,7 @@
     "test": "yarn run test:unit && yarn run test:e2e",
     "test:unit": "jest -c jest.unit.config.js",
     "test:e2e": "yarn run pack && jest -c jest.e2e.config.js",
-    "prepack": "electron-rebuild ."
+    "postinstall": "electron-builder install-app-deps"
   },
   "build": {
     "productName": "saladict-desktop",
@@ -136,7 +136,6 @@
     "electron-debug": "^3.0.1",
     "electron-devtools-installer": "^2.2.4",
     "electron-positioner": "^4.1.0",
-    "electron-rebuild": "^1.10.1",
     "electron-serve": "^1.0.0",
     "electron-store": "^5.1.1",
     "electron-updater": "^4.2.5",
