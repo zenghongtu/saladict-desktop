@@ -6,7 +6,7 @@
   "license": "MIT",
   "main": "./main.js",
   "scripts": {
-    "build": "node .electron-react/build.js && electron-builder",
+    "build": "node .electron-react/build.js",
     "build:dir": "node .electron-react/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-react/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-react/build.js",
@@ -24,7 +24,7 @@
     "patch": "yarn version --patch",
     "minor": "yarn version --minor",
     "major": "yarn version --major",
-    "release": "yarn build -m -p always"
+    "release": "yarn build && electron-builder"
   },
   "build": {
     "productName": "saladict-desktop",
