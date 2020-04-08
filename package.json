@@ -1,6 +1,6 @@
 {
   "name": "saladict-desktop",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "zenghongtu",
   "description": "An electron-react project",
   "license": "MIT",
@@ -20,7 +20,11 @@
     "test": "yarn run test:unit && yarn run test:e2e",
     "test:unit": "jest -c jest.unit.config.js",
     "test:e2e": "yarn run pack && jest -c jest.e2e.config.js",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "patch": "yarn version --patch",
+    "minor": "yarn version --minor",
+    "major": "yarn version --major",
+    "release": "yarn build -m -p always"
   },
   "build": {
     "productName": "saladict-desktop",
