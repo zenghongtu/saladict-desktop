@@ -20,6 +20,8 @@ jobs:
         with:
           node-version: 12
 
+      - run: yarn install
+      - run: GH_TOKEN=$github_token yarn release
       # - name: Install Snapcraft
       #   uses: samuelmeuli/action-snapcraft@v1
       #   # Only install Snapcraft on Ubuntu
@@ -36,19 +38,19 @@ jobs:
       #     echo '${{ secrets.api_key }}' > ~/private_keys/AuthKey_${{ secrets.api_key_id }}.p8
 
       - name: Build/release Electron app
-        uses: samuelmeuli/action-electron-builder@v1
-        with:
-          # GitHub token, automatically provided to the action
-          # (No need to define this secret in the repo settings)
-          github_token: ${{ secrets.github_token }}
+        # uses: samuelmeuli/action-electron-builder@v1
+        # with:
+        #   # GitHub token, automatically provided to the action
+        #   # (No need to define this secret in the repo settings)
+        #   github_token: ${{ secrets.github_token }}
 
-          # macOS code signing certificate
-          # mac_certs: ${{ secrets.mac_certs }}
-          # mac_certs_password: ${{ secrets.mac_certs_password }}
+        #   # macOS code signing certificate
+        #   # mac_certs: ${{ secrets.mac_certs }}
+        #   # mac_certs_password: ${{ secrets.mac_certs_password }}
 
-          # If the commit is tagged with a version (e.g. "v1.0.0"),
-          # release the app after building
-          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        #   # If the commit is tagged with a version (e.g. "v1.0.0"),
+        #   # release the app after building
+        #   release: ${{ startsWith(github.ref, 'refs/tags/v') }}
         # env:
         #   # macOS notarization API key
         #   API_KEY_ID: ${{ secrets.api_key_id }}
