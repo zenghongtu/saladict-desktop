@@ -47,6 +47,13 @@ const initTray = (mainWindow: BrowserWindow | null) => {
       },
     },
     {
+      label: '快捷键',
+      click: () => {
+        const loadUrl = `${SCHEME}://-/shortcut.html`
+        windows.add(loadUrl, 'shortcut', { width: 600, height: 400 })
+      },
+    },
+    {
       label: '开机启动',
       type: 'checkbox',
       checked: app.getLoginItemSettings().openAtLogin,
