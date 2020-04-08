@@ -1,3 +1,4 @@
+import { windows } from './WindowManager'
 import path from 'path'
 import {
   nativeImage,
@@ -13,6 +14,7 @@ import {
 } from 'electron'
 // @ts-ignore
 import Positioner from 'electron-positioner'
+import { SCHEME } from '../consts'
 
 export let positioner: Positioner | null
 export let tray: Tray | null
@@ -38,6 +40,13 @@ const initTray = (mainWindow: BrowserWindow | null) => {
 
   const template: Array<MenuItemConstructorOptions | MenuItem> = [
     {
+      label: '设置',
+      click: () => {
+        const loadUrl = `${SCHEME}://-/iframe.html?sub=options.html`
+        windows.add(loadUrl, 'options')
+      },
+    },
+    {
       label: '开机启动',
       type: 'checkbox',
       checked: app.getLoginItemSettings().openAtLogin,
@@ -53,6 +62,9 @@ const initTray = (mainWindow: BrowserWindow | null) => {
       click: (item) => {
         global.shareVars.listenClipboard = item.checked
       },
+    },
+    {
+      type: 'separator',
     },
     {
       label: '反馈建议',
