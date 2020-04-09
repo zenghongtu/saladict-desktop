@@ -48,7 +48,7 @@ let mainConfig = {
       { context: 'src', from: 'saladict', to: './' },
     ]),
   ],
-  externals: ['iohook'],
+  externals: ['iohook', 'robotjs'],
   resolve: {
     modules: ['src', 'node_modules'],
     extensions: ['.js', '.ts', '.json', '.node'],
