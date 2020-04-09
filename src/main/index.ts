@@ -10,6 +10,7 @@ import { SCHEME } from '../consts'
 import { emitter } from './utils'
 import { autoUpdater } from 'electron-updater'
 import initShortcuts from './shortcut'
+import { initGA } from './ga'
 
 initGlobalShareVars()
 
@@ -102,6 +103,7 @@ app.on('ready', async () => {
   const saladbowlWindow = initSaladbowl(mainWindow)
   initIOListener(mainWindow, saladbowlWindow)
   initShortcuts(mainWindow)
+  initGA(mainWindow)
 
   autoUpdater.checkForUpdatesAndNotify()
 })

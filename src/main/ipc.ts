@@ -2,6 +2,7 @@ import { BrowserWindow, ipcMain, globalShortcut } from 'electron'
 import { windows } from './WindowManager'
 import { getChangeKeys, inflateData } from './utils'
 import { unlessAppConfigFields } from '../consts'
+import { sendPageView } from './ga'
 
 const updateShareVars = (keys: (keyof AppConfig)[], data: AppConfig) => {
   keys.forEach((key) => {
@@ -24,6 +25,7 @@ const initIpcHandler = (
       const url = payload.url
       const loadUrl = `${baseURL}/iframe.html?sub=${url}`
       windows.add(loadUrl, url.split('.html')[0])
+      sendPageView(url)
     } else if (type === 'PIN_STATE') {
       global.shareVars.isPinPanel = payload
     }
