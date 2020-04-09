@@ -96,6 +96,7 @@
       ],
       "category": "Development"
     },
+    "npmRebuild": false,
     "publish": [
       {
         "provider": "github",
