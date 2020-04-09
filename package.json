@@ -30,7 +30,7 @@
     "productName": "saladict-desktop",
     "appId": "com.zenghongtu.saladict-desktop",
     "directories": {
-      "output": "build"
+      "output": "release"
     },
     "files": [
       {
@@ -91,7 +91,8 @@
     "linux": {
       "icon": "build/icons/png",
       "target": [
-        "deb"
+        "deb",
+        "rpm"
       ],
       "category": "Development"
     },
