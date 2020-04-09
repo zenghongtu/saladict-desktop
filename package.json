@@ -1,8 +1,8 @@
 {
   "name": "saladict-desktop",
   "version": "0.3.0",
-  "author": "zenghongtu",
-  "description": "An electron-react project",
+  "author": "zenghongtu <zenghongtu@gmail.com>",
+  "description": "A selection translation tool base on ext-saladict, support Win/Mac/Linux",
   "license": "MIT",
   "main": "./main.js",
   "scripts": {
@@ -24,7 +24,10 @@
     "patch": "yarn version --patch",
     "minor": "yarn version --minor",
     "major": "yarn version --major",
-    "release": "yarn build && electron-builder"
+    "release": "yarn build && electron-builder",
+    "release:win": "yarn build && electron-builder -w",
+    "release:mac": "yarn build && electron-builder -m",
+    "release:linux": "yarn build && electron-builder -l"
   },
   "build": {
     "productName": "saladict-desktop",
@@ -66,11 +69,11 @@
     "nsis": {
       "createDesktopShortcut": "always",
       "createStartMenuShortcut": true,
-      "shortcutName": "PPet",
+      "shortcutName": "saladict-desktop",
       "oneClick": false,
       "perMachine": true,
       "allowToChangeInstallationDirectory": true,
-      "artifactName": "PPet-${version}.${ext}",
+      "artifactName": "saladict-desktop-${version}.${ext}",
       "unicode": true
     },
     "extraFiles": [],
@@ -91,8 +94,7 @@
     "linux": {
       "icon": "build/icons/png",
       "target": [
-        "deb",
-        "rpm"
+        "deb"
       ],
       "category": "Development"
     },
@@ -139,7 +141,7 @@
     "del": "^5.1.0",
     "devtron": "^1.4.0",
     "electron": "^8.2.1",
-    "electron-builder": "^22.4.1",
+    "electron-builder": "^21.2.0",
     "electron-debug": "^3.0.1",
     "electron-devtools-installer": "^2.2.4",
     "electron-positioner": "^4.1.0",
