@@ -22,8 +22,8 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = path.join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
-if (process.env.NODE_ENV !== 'development') {
-  app.dock.hide()
+if (process.env.NODE_ENV !== 'development' && process.platform === 'darwin') {
+  app.dock?.hide()
 }
 
 let mainWindow: BrowserWindow | null
