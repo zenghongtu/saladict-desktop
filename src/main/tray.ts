@@ -74,6 +74,15 @@ const initTray = (mainWindow: BrowserWindow | null) => {
       type: 'separator',
     },
     {
+      label: '检查更新',
+      click: () => {
+        // TODO
+        shell.openExternal(
+          'https://github.com/zenghongtu/saladict-desktop/releases',
+        )
+      },
+    },
+    {
       label: '反馈建议',
       click: () => {
         shell.openExternal(
