@@ -46,6 +46,10 @@ class WindowManager {
       event.preventDefault()
     })
 
+    window.setMenu(null)
+    window.setMenuBarVisibility(false)
+    window.setVisibleOnAllWorkspaces(true)
+
     return window
   }
 
