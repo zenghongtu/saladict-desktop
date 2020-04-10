@@ -49,6 +49,7 @@ const initIOListener = (mainWin: BrowserWindow | null) => {
     } else {
       mouseDownAt = 0
     }
+    getSaladbowWin()?.hide()
   })
 
   // TODO compare x / y
