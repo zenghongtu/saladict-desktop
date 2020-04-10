@@ -73,7 +73,9 @@ const initIOListener = (
     }
 
     if (
-      (mouseDownAt && +new Date() - mouseDownAt >= doubleClickDelay) ||
+      (mouseDownAt &&
+        +new Date() - mouseDownAt >= doubleClickDelay &&
+        (_mode.direct || (_mode.icon && !isPinPanel))) ||
       (_mode.double && clicks >= 2) ||
       isHolding
     ) {
@@ -99,9 +101,10 @@ const initIOListener = (
         return
       }
 
+      // TODO show bowl ,then exec copy
       if (_mode.icon && !isPinPanel) {
         saladbowlWin?.setPosition(_x, _y)
-        saladbowlWin?.show()
+        saladbowlWin?.showInactive()
         mainWin?.setPosition(_x + 40, _y)
         return
       }
