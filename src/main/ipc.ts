@@ -63,6 +63,10 @@ const initIpcHandler = (
 
     return Promise.resolve()
   })
+
+  ipcMain.on('show-search-panel', (event) => {
+    mainWin?.show()
+  })
 }
 
 export default initIpcHandler

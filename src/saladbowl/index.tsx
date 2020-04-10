@@ -2,16 +2,12 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import '../reset.css'
 import './style.scss'
-import { remote } from 'electron'
+import { remote, ipcRenderer } from 'electron'
 
 const Saladbowl = () => {
   const next = () => {
-    const mainWinId = remote.getGlobal('shareVars').mainWindowId
-    if (!mainWinId) {
-      return
-    }
+    ipcRenderer.send('show-search-panel')
     remote.getCurrentWindow().hide()
-    remote.BrowserWindow.fromId(mainWinId)?.show()
   }
 
   const handleClick = () => {
