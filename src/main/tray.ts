@@ -38,80 +38,92 @@ const initTray = (mainWindow: BrowserWindow | null) => {
     bounds = _bounds
   })
 
-  const template: Array<MenuItemConstructorOptions | MenuItem> = [
-    {
-      label: '设置',
-      click: () => {
-        const loadUrl = `${SCHEME}://-/iframe.html?sub=options.html`
-        windows.add(loadUrl, 'options')
+  const getTemplate = () => {
+    const template: Array<MenuItemConstructorOptions | MenuItem> = [
+      {
+        label: '启用划词',
+        accelerator: global.shareVars.enableInlineTranslator,
+        type: 'checkbox',
+        checked: global.shareVars.active,
+        click: () => {
+          global.shareVars.active = !global.shareVars.active
+        },
       },
-    },
-    {
-      label: '快捷键',
-      click: () => {
-        const loadUrl = `${SCHEME}://-/shortcut.html`
-        windows.add(loadUrl, 'shortcut', { width: 600, height: 400 })
+      {
+        label: '设置',
+        click: () => {
+          const loadUrl = `${SCHEME}://-/iframe.html?sub=options.html`
+          windows.add(loadUrl, 'options')
+        },
       },
-    },
-    {
-      label: '开机启动',
-      type: 'checkbox',
-      checked: app.getLoginItemSettings().openAtLogin,
-      click: (item) => {
-        const { checked } = item
-        app.setLoginItemSettings({ openAtLogin: checked })
+      {
+        label: '快捷键',
+        click: () => {
+          const loadUrl = `${SCHEME}://-/shortcut.html`
+          windows.add(loadUrl, 'shortcut', { width: 600, height: 400 })
+        },
       },
-    },
-    {
-      label: '监听剪切板',
-      type: 'checkbox',
-      checked: global.shareVars.listenClipboard,
-      click: (item) => {
-        global.shareVars.listenClipboard = item.checked
+      {
+        label: '开机启动',
+        type: 'checkbox',
+        checked: app.getLoginItemSettings().openAtLogin,
+        click: (item) => {
+          const { checked } = item
+          app.setLoginItemSettings({ openAtLogin: checked })
+        },
       },
-    },
-    {
-      type: 'separator',
-    },
-    {
-      label: '检查更新',
-      click: () => {
-        // TODO
-        shell.openExternal(
-          'https://github.com/zenghongtu/saladict-desktop/releases',
-        )
+      {
+        label: '监听剪切板',
+        type: 'checkbox',
+        checked: global.shareVars.listenClipboard,
+        click: (item) => {
+          global.shareVars.listenClipboard = item.checked
+        },
       },
-    },
-    {
-      label: '反馈建议',
-      click: () => {
-        shell.openExternal(
-          'https://github.com/zenghongtu/saladict-desktop/issues',
-        )
+      {
+        type: 'separator',
       },
-    },
-    {
-      label: '重启应用',
-      click: () => {
-        app.relaunch()
-        app.quit()
+      {
+        label: '检查更新',
+        click: () => {
+          // TODO
+          shell.openExternal(
+            'https://github.com/zenghongtu/saladict-desktop/releases',
+          )
+        },
       },
-    },
-    {
-      label: '关于',
-      role: 'about',
-    },
-    {
-      label: '退出',
-      click: (item) => {
-        app.quit()
+      {
+        label: '反馈建议',
+        click: () => {
+          shell.openExternal(
+            'https://github.com/zenghongtu/saladict-desktop/issues',
+          )
+        },
       },
-    },
-  ]
-
-  const menu = Menu.buildFromTemplate(template)
+      {
+        label: '重启应用',
+        click: () => {
+          app.relaunch()
+          app.quit()
+        },
+      },
+      {
+        label: '关于',
+        role: 'about',
+      },
+      {
+        label: '退出',
+        role: 'quit',
+        click: (item) => {
+          app.quit()
+        },
+      },
+    ]
+    return template
+  }
 
   tray.on('right-click', (event) => {
+    const menu = Menu.buildFromTemplate(getTemplate())
     tray?.popUpContextMenu(menu)
   })
 
