@@ -4,13 +4,21 @@ import { remote, ipcRenderer } from 'electron'
 import { DEFAULT_GLOBAL_SHORTCUTS } from '../consts'
 
 const App: FunctionComponent<{}> = () => {
-  const [openShortcut, setOpenShortcut] = useState(
-    DEFAULT_GLOBAL_SHORTCUTS['openSaladict'],
-  )
+  const [shortcuts, setShortcuts] = useState({
+    openSaladict: DEFAULT_GLOBAL_SHORTCUTS['openSaladict'],
+    enableInlineTranslator: DEFAULT_GLOBAL_SHORTCUTS['enableInlineTranslator'],
+  })
 
   useEffect(() => {
-    setOpenShortcut(remote.getGlobal('shareVars').openSaladict)
-    console.log('remote.getGlobal ', remote.getGlobal('shareVars').openSaladict)
+    const {
+      openSaladict: openSaladictHotkey,
+      enableInlineTranslator: enableInlineTranslatorHotkey,
+    } = remote.getGlobal('shareVars')
+
+    setShortcuts({
+      openSaladict: openSaladictHotkey,
+      enableInlineTranslator: enableInlineTranslatorHotkey,
+    })
   }, [])
 
   const keyCodeMap = {
@@ -83,7 +91,10 @@ const App: FunctionComponent<{}> = () => {
     222: "'",
   }
 
-  const handleKeydown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeydown = async (
+    name: string,
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
     let keyName: string
 
     const keyValue = []
@@ -110,21 +121,35 @@ const App: FunctionComponent<{}> = () => {
     keyName = keyValue.join('+')
 
     await ipcRenderer.invoke('update-shortcut-message', {
-      name: 'openSaladict',
+      name,
       value: keyName,
     })
 
-    setOpenShortcut(keyName)
+    setShortcuts({ ...shortcuts, [name]: keyName })
   }
 
   return (
     <div className="app">
       <form>
         <div className="group">
-          <input type="text" value={openShortcut} onKeyDown={handleKeydown} />
+          <input
+            type="text"
+            value={shortcuts.openSaladict}
+            onKeyDown={handleKeydown.bind(null, 'openSaladict')}
+          />
           <span className="highlight"></span>
           <span className="bar"></span>
-          <label>Open Saladict Shortcut</label>
+          <label>Open Saladict</label>
+        </div>
+        <div className="group">
+          <input
+            type="text"
+            value={shortcuts.enableInlineTranslator}
+            onKeyDown={handleKeydown.bind(null, 'enableInlineTranslator')}
+          />
+          <span className="highlight"></span>
+          <span className="bar"></span>
+          <label>Enable Inline Translator</label>
         </div>
       </form>
     </div>

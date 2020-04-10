@@ -20,13 +20,17 @@ const initGlobalShareVars = () => {
 
   let saladictConfig = inflateData<AppConfig>(baseConfig)
 
-  const { openSaladict, listenClipboard } = store.get('config') || {}
+  const { openSaladict, enableInlineTranslator, listenClipboard } =
+    store.get('config') || {}
   const shareVars = {
     ...saladictConfig,
     isPinPanel: false,
     selectedText: '',
     mainWindowId: 0,
     openSaladict: openSaladict || DEFAULT_GLOBAL_SHORTCUTS['openSaladict'],
+    enableInlineTranslator:
+      enableInlineTranslator ||
+      DEFAULT_GLOBAL_SHORTCUTS['enableInlineTranslator'],
     listenClipboard: listenClipboard || false,
   } as ShareVars
 

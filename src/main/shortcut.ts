@@ -12,11 +12,26 @@ const initShortcuts = (mainWin: BrowserWindow | null) => {
       mainWin?.focus()
     })
   }
+
+  const registerEnableInlineTranslator = (value?: string) => {
+    globalShortcut.register(
+      value || global.shareVars['enableInlineTranslator'],
+      () => {
+        global.shareVars['active'] = !global.shareVars['active']
+      },
+    )
+  }
+
   emitter.on('openSaladict', (value) => {
     registerOpenSaladict(value)
   })
 
+  emitter.on('enableInlineTranslator', (value) => {
+    registerEnableInlineTranslator(value)
+  })
+
   registerOpenSaladict()
+  registerEnableInlineTranslator()
 }
 
 export default initShortcuts

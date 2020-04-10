@@ -15,8 +15,9 @@ export const unlessAppConfigFields = [
 ]
 
 export const DEFAULT_GLOBAL_SHORTCUTS = {
-  openSaladict: 'CommandOrControl+Alt+X',
-  clipboardListen: 'CommandOrControl+Alt+C',
+  openSaladict: 'CommandOrControl+Shift+Alt+X',
+  // clipboardListen: 'CommandOrControl+Alt+C',
+  enableInlineTranslator: 'CommandOrControl+Alt+Shift+Z',
 }
 
 export const defaultSalaAppConfig: AppConfig = {

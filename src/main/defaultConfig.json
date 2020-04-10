@@ -51,7 +51,8 @@
   },
   "local": {},
   "config": {
-    "openSaladict": "CommandOrControl+Ctrl+X",
+    "openSaladict": "CommandOrControl+Alt+Shift+X",
+    "enableInlineTranslator": "CommandOrControl+Alt+Shift+Z",
     "listenClipboard": false
   }
 }
