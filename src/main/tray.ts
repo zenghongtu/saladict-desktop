@@ -91,6 +91,13 @@ const initTray = (mainWindow: BrowserWindow | null) => {
       },
     },
     {
+      label: '重启应用',
+      click: () => {
+        app.relaunch()
+        app.quit()
+      },
+    },
+    {
       label: '关于',
       role: 'about',
     },
