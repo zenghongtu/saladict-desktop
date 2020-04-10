@@ -29,4 +29,4 @@ before_script:
 script:
   - npm install
   - npm run rebuild
-  - npm run release
+  - npm run release > /dev/null
