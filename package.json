@@ -1,6 +1,6 @@
 {
   "name": "saladict-desktop",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "author": "zenghongtu <zenghongtu@gmail.com>",
   "description": "An inline translator base on ext-saladict, support Win/Mac/Linux",
   "homepage": "https://github.com/zenghongtu/saladict-desktop",
