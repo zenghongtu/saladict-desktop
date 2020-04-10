@@ -54,6 +54,11 @@ const initIOListener = (mainWin: BrowserWindow | null) => {
 
   // TODO compare x / y
   ioHook.on('mouseup', async (event) => {
+    // fix click in search panel
+    if (mainWin?.isFocused()) {
+      return
+    }
+
     const { clicks, x, y } = event
 
     const {
