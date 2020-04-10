@@ -38,11 +38,14 @@ const initGlobalShareVars = () => {
 
   global.shareVars = new Proxy(shareVars, {
     set: (target, p: keyof ShareVars, value, receiver) => {
-      emitter.emit(p, value)
+      // fix set undefined
 
-      // if (typeof target[p] === 'undefined' || typeof value === 'undefined') {
-      //   return false
-      // }
+      if (typeof target[p] === 'undefined' || typeof value === 'undefined') {
+        console.warn(`set ${p} to undefined`)
+        return true
+      }
+
+      emitter.emit(p, value)
       ;(target as any)[p] = value
 
       if (isString(p) && whitelist.includes(p)) {
