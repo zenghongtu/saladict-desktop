@@ -83,7 +83,7 @@ const initIOListener = (
       let _isHolding = isHolding
 
       const text = await getSelectedText()
-      global.shareVars.selectedText = text || ''
+      // global.shareVars.selectedText = text || ''
 
       if (!text) {
         console.error('Get selected text failed!')
@@ -95,7 +95,7 @@ const initIOListener = (
       const _x = x + bowlOffsetX
       const _y = y + bowlOffsetY
 
-      if (_mode.direct || _isHolding) {
+      if (_mode.direct || _mode.double || _isHolding) {
         !isPinPanel && mainWin?.setPosition(_x, _y)
         mainWin?.show()
         return
