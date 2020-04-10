@@ -23,7 +23,7 @@ class WindowManager {
     windowID = loadUrl,
     options?: BrowserWindowConstructorOptions,
   ) {
-    const _options = Object.assign(defaultWinOptions, options)
+    const _options = Object.assign({}, defaultWinOptions, options)
 
     if (this.focus(windowID)) return
 
