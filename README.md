@@ -1,10 +1,10 @@
 # saladict-desktop
 
-> An electron-react project
+> An inline translator base on ext-saladict, support Win/Mac/Linux
 
 #### Build Setup
 
-``` bash
+```bash
 # install dependencies
 npm install
 

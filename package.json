@@ -2,7 +2,7 @@
   "name": "saladict-desktop",
   "version": "0.5.0",
   "author": "zenghongtu <zenghongtu@gmail.com>",
-  "description": "A selection translation tool base on ext-saladict, support Win/Mac/Linux",
+  "description": "An inline translator base on ext-saladict, support Win/Mac/Linux",
   "license": "MIT",
   "main": "./main.js",
   "scripts": {
