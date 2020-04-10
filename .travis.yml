@@ -18,6 +18,9 @@ matrix:
             - libpng-dev
             - libxtst-dev
 
+before_install:
+  - sudo apt-get install rpm
+
 before_script:
   - | # Fix chrome-sandbox: https://github.com/electron/electron/issues/17972
     if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
