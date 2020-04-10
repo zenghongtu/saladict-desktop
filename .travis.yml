@@ -1,42 +1,31 @@
-# Commented sections below can be used to run tests on the CI server
-# https://simulatedgreg.gitbooks.io/electron-vue/content/en/testing.html#on-the-subject-of-ci-testing
-osx_image: xcode8.3
-sudo: required
-dist: trusty
-language: c
 matrix:
   include:
-  - os: osx
-  - os: linux
-    env: CC=clang CXX=clang++ npm_config_clang=1
-    compiler: clang
-cache:
-  directories:
-  - node_modules
-  - "$HOME/.electron"
-  - "$HOME/.cache"
-addons:
-  apt:
-    packages:
-    - libgnome-keyring-dev
-    - icnsutils
-    #- xvfb
-before_install:
-- mkdir -p /tmp/git-lfs && curl -L https://github.com/github/git-lfs/releases/download/v1.2.1/git-lfs-$([
-  "$TRAVIS_OS_NAME" == "linux" ] && echo "linux" || echo "darwin")-amd64-1.2.1.tar.gz
-  | tar -xz -C /tmp/git-lfs --strip-components 1 && /tmp/git-lfs/git-lfs pull
-- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick xz-utils; fi
-install:
-#- export DISPLAY=':99.0'
-#- Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-- nvm install 7
-- curl -o- -L https://yarnpkg.com/install.sh | bash
-- source ~/.bashrc
-- npm install -g xvfb-maybe
-- yarn
+    - os: osx
+      osx_image: xcode9.4
+      language: node_js
+      node_js: '12'
+
+    - os: linux
+      dist: bionic
+      sudo: true
+      language: node_js
+      node_js: '12'
+      addons:
+        apt:
+          packages:
+            - libx11-dev
+            - zlib1g-dev
+            - libpng-dev
+            - libxtst-dev
+
+before_script:
+  - | # Fix chrome-sandbox: https://github.com/electron/electron/issues/17972
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+      echo "Fixing chrome-sandbox permissions..."
+      sudo chown root ./node_modules/electron/dist/chrome-sandbox
+      sudo chmod 4755 ./node_modules/electron/dist/chrome-sandbox
+    fi
 script:
-#- xvfb-maybe node_modules/.bin/karma start test/unit/karma.conf.js
-- yarn run build
-branches:
-  only:
-  - master
+  - npm install
+  - npm run rebuild
+  - npm run release
