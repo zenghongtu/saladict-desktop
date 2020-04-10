@@ -3,6 +3,7 @@
   "version": "0.6.0",
   "author": "zenghongtu <zenghongtu@gmail.com>",
   "description": "An inline translator base on ext-saladict, support Win/Mac/Linux",
+  "homepage": "https://github.com/zenghongtu/saladict-desktop",
   "license": "MIT",
   "main": "./main.js",
   "scripts": {
@@ -24,7 +25,7 @@
     "patch": "yarn version --patch",
     "minor": "yarn version --minor",
     "major": "yarn version --major",
-    "release": "yarn build && electron-builder",
+    "release": "npm run build && electron-builder",
     "release:win": "yarn build && electron-builder -w",
     "release:mac": "yarn build && electron-builder -m",
     "release:linux": "yarn build && electron-builder -l",
@@ -95,7 +96,8 @@
     "linux": {
       "icon": "build/icons/png",
       "target": [
-        "deb"
+        "deb",
+        "rpm"
       ],
       "category": "Development"
     },
