@@ -97,13 +97,14 @@ async function createWindow(baseURL: string) {
 
 app.on('ready', async () => {
   const mainWindow = await createWindow(baseURL)
-
   initTray(mainWindow)
-  initIOListener(mainWindow)
   initShortcuts(mainWindow)
   initGA(mainWindow)
-
   autoUpdater.checkForUpdatesAndNotify()
+
+  setTimeout(() => {
+    initIOListener(mainWindow)
+  }, 500)
 })
 
 app.on('window-all-closed', () => {
