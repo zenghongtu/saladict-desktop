@@ -1,3 +1,4 @@
+import { getSaladbowWin } from './saladbowl'
 import ioHook from 'iohook'
 import { app, BrowserWindow, clipboard } from 'electron'
 import { emitter, getSelectedText, watchClipboard } from './utils'
@@ -12,10 +13,7 @@ let mouseDownAt: number = 0
 
 let stopWatch: Function | null
 
-const initIOListener = (
-  mainWin: BrowserWindow | null,
-  saladbowlWin: BrowserWindow | null,
-) => {
+const initIOListener = (mainWin: BrowserWindow | null) => {
   const setListenKeyHolding = () => {
     ioHook.on('keydown', (event) => {
       const keyName = Object.keys(event).find((_key) => event[_key] === true)
@@ -103,8 +101,8 @@ const initIOListener = (
 
       // TODO show bowl ,then exec copy
       if (_mode.icon && !isPinPanel) {
-        saladbowlWin?.setPosition(_x, _y)
-        saladbowlWin?.showInactive()
+        getSaladbowWin()?.setPosition(_x, _y)
+        getSaladbowWin()?.showInactive()
         mainWin?.setPosition(_x + 40, _y)
         return
       }

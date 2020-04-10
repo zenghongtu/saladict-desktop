@@ -1,8 +1,9 @@
+import { emitter } from './utils'
 import { BrowserWindow } from 'electron'
 
 let saladbowlWindow: BrowserWindow | null
 
-const initSaladbowl = (mainWindow: BrowserWindow | null) => {
+const createSaladbowlWin = () => {
   saladbowlWindow = new BrowserWindow({
     width: 30,
     height: 30,
@@ -47,4 +48,12 @@ const initSaladbowl = (mainWindow: BrowserWindow | null) => {
   return saladbowlWindow
 }
 
-export default initSaladbowl
+export const getSaladbowWin = () => {
+  return saladbowlWindow || createSaladbowlWin()
+}
+
+emitter.on('mode', ({ icon }) => {
+  if (icon === false) {
+    saladbowlWindow?.close()
+  }
+})

@@ -4,7 +4,6 @@ import Serve from 'electron-serve'
 import initGlobalShareVars from './shareVars'
 import initIpcHandler from './ipc'
 import initTray from './tray'
-import initSaladbowl from './saladbowl'
 import initIOListener from './ioListener'
 import { SCHEME } from '../consts'
 import { emitter } from './utils'
@@ -100,8 +99,7 @@ app.on('ready', async () => {
   const mainWindow = await createWindow(baseURL)
 
   initTray(mainWindow)
-  const saladbowlWindow = initSaladbowl(mainWindow)
-  initIOListener(mainWindow, saladbowlWindow)
+  initIOListener(mainWindow)
   initShortcuts(mainWindow)
   initGA(mainWindow)
 
