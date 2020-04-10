@@ -34,7 +34,11 @@ const initGlobalShareVars = () => {
     listenClipboard: listenClipboard || false,
   } as ShareVars
 
-  const whitelist = ['openSaladict', 'listenClipboard']
+  const configKeys = [
+    'openSaladict',
+    'enableInlineTranslator',
+    'listenClipboard',
+  ]
 
   global.shareVars = new Proxy(shareVars, {
     set: (target, p: keyof ShareVars, value, receiver) => {
@@ -48,7 +52,7 @@ const initGlobalShareVars = () => {
       emitter.emit(p, value)
       ;(target as any)[p] = value
 
-      if (isString(p) && whitelist.includes(p)) {
+      if (isString(p) && configKeys.includes(p)) {
         store.set(`config.${p}`, value)
       }
       console.log('set ', p, '=', value)
