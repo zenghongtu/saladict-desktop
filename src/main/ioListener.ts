@@ -118,21 +118,16 @@ const initIOListener = (mainWin: BrowserWindow | null) => {
   })
 
   const runHook = () => {
-    if (!hasRun) {
-      ioHook.start(false)
-      hasRun = true
-    } else {
+    if (hasRun) {
       ioHook.load()
     }
+    ioHook.start(false)
+    hasRun = true
   }
 
   const destroyHook = () => {
     ioHook.unload()
-  }
-
-  const restartHook = () => {
-    ioHook.unload()
-    ioHook.load()
+    ioHook.stop()
   }
 
   emitter.on('active', (enable) => {
