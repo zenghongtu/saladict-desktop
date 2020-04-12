@@ -1,27 +1,40 @@
 import { DEFAULT_GLOBAL_SHORTCUTS } from './../consts'
 import fs from 'fs'
-import { emitter, inflateData } from './utils'
+import { emitter, inflateData, deflateData } from './utils'
 import { store } from '../store'
 import { isString } from 'util'
+import { app } from 'electron'
 
 const initGlobalShareVars = () => {
   let baseConfig = store.get('sync.baseconfig.d')
 
+  let saladictConfig: AppConfig
+
   if (!baseConfig) {
     const defaultConfig = require('./defaultConfig.json')
 
-    // TODO modify somethings
+    const lang = app.getLocale().startsWith('zh') ? 'zh-CN' : 'en'
+
+    baseConfig = defaultConfig.sync.baseconfig.d
+
+    saladictConfig = inflateData<AppConfig>(baseConfig)
+
+    // modify lang
+    saladictConfig.langCode = lang
+
+    defaultConfig.sync.baseconfig.d = deflateData(saladictConfig)
+
     fs.writeFileSync(store.path, JSON.stringify(defaultConfig), {
       encoding: 'utf8',
     })
-
-    baseConfig = defaultConfig.sync.baseconfig.d
+  } else {
+    saladictConfig = inflateData<AppConfig>(baseConfig)
   }
 
-  let saladictConfig = inflateData<AppConfig>(baseConfig)
 
   const { openSaladict, enableInlineTranslator, listenClipboard } =
     store.get('config') || {}
+
   const shareVars = {
     ...saladictConfig,
     isPinPanel: false,

@@ -58,4 +58,8 @@ inflateData = (data: pako.Data) => {
   return JSON.parse(config)
 }
 
+export function deflateData(config: AppConfig): pako.Data {
+  return pako.deflate(JSON.stringify(config), { to: 'string' })
+}
+
 export const emitter = mitt()
