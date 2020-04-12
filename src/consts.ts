@@ -1,6 +1,6 @@
 export const SCHEME = 'saladict-desktop'
 
-export const unlessAppConfigFields = [
+export const unlessAppConfigFields: Partial<keyof AppConfig>[] = [
   'updateCheck',
   'pdfSniff',
   'pdfWhitelist',

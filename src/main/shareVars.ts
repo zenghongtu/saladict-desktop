@@ -1,4 +1,4 @@
-import { DEFAULT_GLOBAL_SHORTCUTS } from './../consts'
+import { DEFAULT_GLOBAL_SHORTCUTS, unlessAppConfigFields } from './../consts'
 import fs from 'fs'
 import { emitter, inflateData, deflateData } from './utils'
 import { store } from '../store'
@@ -31,6 +31,10 @@ const initGlobalShareVars = () => {
     saladictConfig = inflateData<AppConfig>(baseConfig)
   }
 
+  // remove unless fields
+  unlessAppConfigFields.forEach((name) => {
+    delete saladictConfig[name]
+  })
 
   const { openSaladict, enableInlineTranslator, listenClipboard } =
     store.get('config') || {}
