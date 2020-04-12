@@ -27,6 +27,12 @@
 
 ![](assets/options1.png)
 
+## 后续计划
+
+- OCR
+- 自定义分词 （驼峰拆分）
+- 变量命名
+
 ## 安装
 
 [这里](https://github.com/zenghongtu/saladict-desktop/releases)去下载最新版本，或者下面的指定系统版本。
