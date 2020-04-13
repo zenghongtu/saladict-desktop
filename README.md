@@ -20,11 +20,20 @@
 - 剪切板监听（复制翻译）
 - 等等...
 
-## 截图
+## 部分截图
 
-<img src="assets/search-panel.png" width="300">
-<img src="assets/options.png" width="600">
-<img src="assets/options1.png" width="600">
+### 左击托盘图标
+
+<img src="assets/search-panel.png" width="400">
+
+### 右击托盘图标
+
+<img src="assets/right-click.png" width="400">
+
+### 设置页
+
+<img src="assets/options.png" width="800">
+<img src="assets/options1.png" width="800">
 
 ## 下一步
 
