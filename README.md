@@ -17,21 +17,21 @@
 - 多种划词方式
 - 历史记录
 - 红心保存生词
-- ...
+- 剪切板监听（复制翻译）
+- 等等...
 
 ## 截图
 
-![](assets/search-panel.png)
+<img src="assets/search-panel.png" width="300">
+<img src="assets/options.png" width="600">
+<img src="assets/options1.png" width="600">
 
-![](assets/options.png)
-
-![](assets/options1.png)
-
-## 后续计划
+## 下一步
 
 - OCR
 - 自定义分词 （驼峰拆分）
 - 变量命名
+- ...
 
 ## 安装
 
@@ -71,4 +71,4 @@ npm run lint
 
 ## 其他
 
-感谢 [crimx/ext-saladict](https://github.com/crimx/ext-saladict)
+- 特别感谢 [crimx/ext-saladict](https://github.com/crimx/ext-saladict)
