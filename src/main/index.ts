@@ -1,124 +1,85 @@
-import { app, BrowserWindow, ipcMain, Tray, nativeImage } from 'electron'
-import path from 'path'
-import Serve from 'electron-serve'
-import initGlobalShareVars from './shareVars'
-import initIpcHandler from './ipc'
-import initTray from './tray'
-import initIOListener from './ioListener'
-import { SCHEME } from '../consts'
-import { emitter } from './utils'
-import { autoUpdater } from 'electron-updater'
-import initShortcuts from './shortcut'
-import { initGA } from './ga'
+import os from 'os'
+import { join } from 'path'
+import { app, BrowserWindow, session } from 'electron'
 
-initGlobalShareVars()
+import remoteMain from '@electron/remote/main'
 
-/**
- * Set `__static` path to static files in production
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
- */
-if (process.env.NODE_ENV !== 'development') {
-  global.__static = path.join(__dirname, '/static').replace(/\\/g, '\\\\')
+remoteMain.initialize()
+
+const isWin7 = os.release().startsWith('6.1')
+if (isWin7) app.disableHardwareAcceleration()
+
+if (!app.requestSingleInstanceLock()) {
+  app.quit()
+  process.exit(0)
 }
 
-if (process.env.NODE_ENV !== 'development' && process.platform === 'darwin') {
-  app.dock?.hide()
-}
+let win: BrowserWindow | null = null
 
-let mainWindow: BrowserWindow | null
-
-let forceQuit = false
-
-Serve({
-  scheme: SCHEME,
-  directory: app.getAppPath(),
-})
-
-const baseURL = `${SCHEME}://-`
-
-async function createWindow(baseURL: string) {
-  mainWindow = new BrowserWindow({
-    width: global.shareVars.panelWidth || 450,
-    resizable: false,
-    fullscreenable: false,
-    minimizable: false,
-    maximizable: false,
-    useContentSize: true,
-    frame: false,
-    show: false,
-    alwaysOnTop: true,
+async function createWindow() {
+  win = new BrowserWindow({
+    title: 'PPet',
+    // frame: false,
+    // autoHideMenuBar: true,
+    hasShadow: true,
+    // skipTaskbar: true,
+    // transparent: true,
+    // minimizable: false,
+    // maximizable: false,
+    resizable: true,
+    width: 800,
+    height: 600,
     webPreferences: {
-      nodeIntegration: true,
+      preload: join(__dirname, '../preload/index.cjs'),
       webSecurity: false,
-      nodeIntegrationInSubFrames: true,
     },
   })
 
-  mainWindow.setMenu(null)
-  mainWindow.setMenuBarVisibility(false)
-  mainWindow.setVisibleOnAllWorkspaces(true)
+  if (app.isPackaged) {
+    win.loadFile(join(__dirname, '../renderer/index.html'))
+  } else {
+    const pkg = await import('../../package.json')
+    const url = `http://${pkg.env.HOST || '127.0.0.1'}:${pkg.env.PORT}`
 
-  initIpcHandler(mainWindow, { baseURL })
+    win.loadURL(url, {
+      // userAgent:
+      //   'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/603.1.23 (KHTML, like Gecko) Version/10.0 Mobile/14E5239e Safari/602.1',
+    })
+    win.webContents.openDevTools()
+  }
 
-  await mainWindow.loadURL(`${baseURL}/iframe.html?sub=quick-search.html`)
-
-  mainWindow.on('closed', () => {
-    mainWindow = null
-  })
-
-  mainWindow.on('close', (event) => {
-    if (forceQuit) {
-      app.quit()
-    } else {
-      event.preventDefault()
-      mainWindow?.hide()
-    }
-  })
-
-  mainWindow.on('blur', () => {
-    if (!global.shareVars.isPinPanel) {
-      mainWindow?.hide()
-    }
-  })
-
-  // mainWindow.on('ready-to-show', () => {
-  //   mainWindow?.show()
-  // })
-
-  emitter.on('panelWidth', (width) => {
-    const { height = 550 } = mainWindow?.getBounds() || {}
-    mainWindow?.setSize(width, height, false)
-  })
-
-  global.shareVars.mainWindowId = mainWindow.id
-
-  return mainWindow
+  // Test active push message to Renderer-process.
+  // win.webContents.on('did-finish-load', () => {
+  //   win?.webContents.send('main-process-message', new Date().toLocaleString());
+  // });
 }
 
-app.on('ready', async () => {
-  const mainWindow = await createWindow(baseURL)
-  initTray(mainWindow)
-  initShortcuts(mainWindow)
-  initGA(mainWindow)
-  autoUpdater.checkForUpdatesAndNotify()
-
-  setTimeout(() => {
-    initIOListener(mainWindow)
-  }, 500)
-})
+app.whenReady().then(createWindow)
 
 app.on('window-all-closed', () => {
+  win = null
   if (process.platform !== 'darwin') {
     app.quit()
   }
 })
 
-app.on('before-quit', (e) => {
-  forceQuit = true
+app.on('browser-window-created', (ev, win) => {
+  remoteMain.enable(win.webContents)
+})
+
+app.on('second-instance', () => {
+  if (win) {
+    // Someone tried to run a second instance, we should focus our window.
+    if (win.isMinimized()) win.restore()
+    win.focus()
+  }
 })
 
 app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow(baseURL)
+  const allWindows = BrowserWindow.getAllWindows()
+  if (allWindows.length) {
+    allWindows[0].focus()
+  } else {
+    createWindow()
   }
 })
