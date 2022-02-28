@@ -1,11 +1,17 @@
 import os from 'os'
 import { join } from 'path'
 import { app, BrowserWindow, session } from 'electron'
-
 import remoteMain from '@electron/remote/main'
+import serve from 'electron-serve'
 
 remoteMain.initialize()
 
+const loadURL = serve({
+  isCorsEnabled: false,
+  directory: join(__dirname, '..', 'saladict'),
+})
+
+app.commandLine.appendSwitch('disable-site-isolation-trials')
 const isWin7 = os.release().startsWith('6.1')
 if (isWin7) app.disableHardwareAcceleration()
 
@@ -30,6 +36,7 @@ async function createWindow() {
     width: 800,
     height: 600,
     webPreferences: {
+      contextIsolation: false,
       preload: join(__dirname, '../preload/index.cjs'),
       webSecurity: false,
     },
@@ -41,26 +48,16 @@ async function createWindow() {
     const pkg = await import('../../package.json')
     const url = `http://${pkg.env.HOST || '127.0.0.1'}:${pkg.env.PORT}`
 
-    win.loadURL(url, {
-      // userAgent:
-      //   'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/603.1.23 (KHTML, like Gecko) Version/10.0 Mobile/14E5239e Safari/602.1',
-    })
+    win.loadURL(url)
     win.webContents.openDevTools()
   }
-
-  // Test active push message to Renderer-process.
-  // win.webContents.on('did-finish-load', () => {
-  //   win?.webContents.send('main-process-message', new Date().toLocaleString());
-  // });
 }
 
 app.whenReady().then(createWindow)
 
 app.on('window-all-closed', () => {
   win = null
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+  app.quit()
 })
 
 app.on('browser-window-created', (ev, win) => {

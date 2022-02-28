@@ -1,0 +1,5 @@
+window.browser.cookies.get.callsFake(() => Promise.resolve())
+window.browser.cookies.getAll.callsFake(() => Promise.resolve())
+window.browser.cookies.getAllCookieStores.callsFake(() => Promise.resolve())
+window.browser.cookies.remove.callsFake(() => Promise.resolve())
+window.browser.cookies.set.callsFake(() => Promise.resolve())

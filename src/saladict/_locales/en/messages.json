@@ -1,0 +1,68 @@
+{
+  "extension_name": {
+    "description": "Extension name",
+    "message": "Saladict - Pop-up Dictionary and Page Translator"
+  },
+  "extension_short_name": {
+    "description": "Extension short name",
+    "message": "Saladict"
+  },
+  "extension_description": {
+    "description": "Description of extension",
+    "message": "Saladict is an all-in-one professional pop-up dictionary and page translator which supports multiple search modes, page translations, new word notebook and PDF selection searching."
+  },
+  "command_toggle_active": {
+    "message": "Toggle inline translator"
+  },
+  "command_toggle_instant": {
+    "message": "Toggle instant capture"
+  },
+  "command_open_quick_search": {
+    "message": "Open or highlight standalone dict panel"
+  },
+  "command_open_google": {
+    "message": "Open Google Translate"
+  },
+  "command_open_youdao": {
+    "message": "Open Youdao Translate"
+  },
+  "command_open_caiyun": {
+    "message": "Open LingoCloud Translate"
+  },
+  "command_open_pdf": {
+    "message": "Open current PDF in Saladict"
+  },
+  "command_search_clipboard": {
+    "message": "Search clipboard content in Standalone Panel"
+  },
+  "command_next_history": {
+    "message": "Next Search History"
+  },
+  "command_prev_history": {
+    "message": "Previous Search History"
+  },
+  "command_next_profile": {
+    "message": "Next Profile"
+  },
+  "command_prev_profile": {
+    "message": "Previous Profile"
+  },
+  "command_profile_1": {
+    "message": "First Profile"
+  },
+  "command_profile_2": {
+    "message": "Second Profile"
+  },
+  "command_profile_3": {
+    "message": "Third Profile"
+  },
+  "command_profile_4": {
+    "message": "Fourth Profile"
+  },
+  "command_profile_5": {
+    "message": "Fifth Profile"
+  },
+  "command_add_notebook": {
+    "message": "Add to Notebook"
+  }
+}

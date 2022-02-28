@@ -12,5 +12,5 @@
     "strict": true,
     "jsx": "react-jsx"
   },
-  "exclude": ["dist", "scripts"]
+  "exclude": ["dist", "scripts", "src/public", "src/emulator", "release"]
 }

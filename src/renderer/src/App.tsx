@@ -5,7 +5,12 @@ function App() {
   return (
     <>
       <GlobalStyles />
-      hello world~
+      <iframe
+        frameBorder="0"
+        scrolling="no"
+        className="iframe"
+        src={`app://-/quick-search.html`}
+      ></iframe>
     </>
   )
 }

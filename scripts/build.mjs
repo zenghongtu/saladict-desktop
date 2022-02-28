@@ -8,6 +8,7 @@ const TAG = chalk.bgBlue('[build.mjs]')
 const viteConfigs = {
   main: 'configs/vite.main.ts',
   preload: 'configs/vite.preload.ts',
+  saladict: 'configs/vite.saladict.ts',
   renderer: 'configs/vite.renderer.ts',
 }
 

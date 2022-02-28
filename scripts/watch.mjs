@@ -7,7 +7,7 @@ import { spawn } from 'child_process'
 import { createServer, build as viteBuild } from 'vite'
 
 const pkg = JSON.parse(
-  readFileSync(join(process.cwd(), 'package.json'), 'utf8')
+  readFileSync(join(process.cwd(), 'package.json'), 'utf8'),
 )
 
 /**
@@ -69,11 +69,24 @@ async function watchPreload(viteDevServer) {
   })
 }
 
+async function watchSaladict(viteDevServer) {
+  return getWatcher({
+    name: 'saladict-watcher',
+    configFile: 'configs/vite.saladict.ts',
+    writeBundle() {
+      viteDevServer.ws.send({
+        type: 'full-reload',
+      })
+    },
+  })
+}
+
 // bootstrap
 const viteDevServer = await createServer({
   configFile: 'configs/vite.renderer.ts',
 })
 
 await viteDevServer.listen()
+await watchSaladict(viteDevServer)
 await watchPreload(viteDevServer)
 await watchMain()

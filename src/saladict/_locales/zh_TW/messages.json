@@ -1,0 +1,68 @@
+{
+  "extension_name": {
+    "description": "Extension name",
+    "message": "沙拉查詞-多字典滑鼠選字翻譯"
+  },
+  "extension_short_name": {
+    "description": "Extension short name",
+    "message": "Saladict"
+  },
+  "extension_description": {
+    "description": "Description of extension",
+    "message": "Saladict 沙拉查詞是一款專業滑鼠選字翻譯套件，為交叉閱讀而生。大量權威字典涵蓋中英日韓法德西語，支援複雜的選字操作、網頁翻譯、生字本与 PDF 瀏覽。"
+  },
+  "command_toggle_active": {
+    "message": "滑鼠選字翻譯開關"
+  },
+  "command_toggle_instant": {
+    "message": "滑鼠懸浮取詞開關"
+  },
+  "command_open_quick_search": {
+    "message": "開啟獨立詞典視窗"
+  },
+  "command_open_google": {
+    "message": "對此頁面使用 Google 翻譯"
+  },
+  "command_open_youdao": {
+    "message": "對此頁面使用有道翻譯"
+  },
+  "command_open_caiyun": {
+    "message": "對當前頁啟用彩雲小譯"
+  },
+  "command_open_pdf": {
+    "message": "在 Saladict 中瀏覽此 PDF"
+  },
+  "command_search_clipboard": {
+    "message": "在獨立視窗中搜尋剪貼簿內容"
+  },
+  "command_next_history": {
+    "message": "下一個臨時查詢歷史"
+  },
+  "command_prev_history": {
+    "message": "上一個臨時查詢歷史"
+  },
+  "command_next_profile": {
+    "message": "下一個情景模式"
+  },
+  "command_prev_profile": {
+    "message": "上一個情景模式"
+  },
+  "command_profile_1": {
+    "message": "第一個情景模式"
+  },
+  "command_profile_2": {
+    "message": "第二個情景模式"
+  },
+  "command_profile_3": {
+    "message": "第三個情景模式"
+  },
+  "command_profile_4": {
+    "message": "第四個情景模式"
+  },
+  "command_profile_5": {
+    "message": "第五個情景模式"
+  },
+  "command_add_notebook": {
+    "message": "加入生詞本"
+  }
+}
