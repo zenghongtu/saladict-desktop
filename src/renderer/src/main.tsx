@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import App from './App'
 
 import manifest from '@src/saladict/manifest.json'
+import { HashRouter } from 'react-router-dom'
 
 const loadScript = (src: string) => {
   return new Promise((resolve, reject) => {
@@ -33,7 +34,9 @@ Promise.resolve(manifest.background.scripts)
   .then(() => {
     ReactDOM.render(
       <React.StrictMode>
-        <App />
+        <HashRouter>
+          <App />
+        </HashRouter>
       </React.StrictMode>,
       document.getElementById('root'),
     )

@@ -3,4 +3,10 @@ import electron from '@electron/remote'
 
 import '@src/emulator/core/index'
 
-// contextBridge.exposeInMainWorld('browser', browser)
+const openWindow = (page: string) => {
+  console.log('page: ', page)
+}
+
+window.bridge = {
+  openWindow,
+}

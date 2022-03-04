@@ -3,10 +3,12 @@ import { join } from 'path'
 import { app, BrowserWindow, session } from 'electron'
 import remoteMain from '@electron/remote/main'
 import serve from 'electron-serve'
+import initTray from './tray'
+import { windows } from './WindowManager'
 
 remoteMain.initialize()
 
-const loadURL = serve({
+serve({
   isCorsEnabled: false,
   directory: join(__dirname, '..', 'saladict'),
 })
@@ -20,44 +22,46 @@ if (!app.requestSingleInstanceLock()) {
   process.exit(0)
 }
 
-let win: BrowserWindow | null = null
+let mainWindow: BrowserWindow | null = null
+let forceQuit = false
 
 async function createWindow() {
-  win = new BrowserWindow({
-    title: 'PPet',
-    // frame: false,
-    // autoHideMenuBar: true,
-    hasShadow: true,
-    // skipTaskbar: true,
-    // transparent: true,
-    // minimizable: false,
-    // maximizable: false,
-    resizable: true,
-    width: 800,
-    height: 600,
-    webPreferences: {
-      contextIsolation: false,
-      preload: join(__dirname, '../preload/index.cjs'),
-      webSecurity: false,
-    },
+  mainWindow = await windows.add('quick-search.html', {
+    title: 'Saladict',
+    width: 400,
+    height: 550,
   })
 
-  if (app.isPackaged) {
-    win.loadFile(join(__dirname, '../renderer/index.html'))
-  } else {
-    const pkg = await import('../../package.json')
-    const url = `http://${pkg.env.HOST || '127.0.0.1'}:${pkg.env.PORT}`
-
-    win.loadURL(url)
-    win.webContents.openDevTools()
+  if (!mainWindow) {
+    return
   }
+
+  mainWindow.on('closed', () => {
+    mainWindow = null
+  })
+
+  mainWindow.on('close', (event) => {
+    if (forceQuit) {
+      app.quit()
+    } else {
+      event.preventDefault()
+      mainWindow?.hide()
+    }
+  })
+
+  initTray(mainWindow)
 }
 
 app.whenReady().then(createWindow)
 
 app.on('window-all-closed', () => {
-  win = null
-  app.quit()
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
+})
+
+app.on('before-quit', (e) => {
+  forceQuit = true
 })
 
 app.on('browser-window-created', (ev, win) => {
@@ -65,18 +69,9 @@ app.on('browser-window-created', (ev, win) => {
 })
 
 app.on('second-instance', () => {
-  if (win) {
+  if (mainWindow) {
     // Someone tried to run a second instance, we should focus our window.
-    if (win.isMinimized()) win.restore()
-    win.focus()
-  }
-})
-
-app.on('activate', () => {
-  const allWindows = BrowserWindow.getAllWindows()
-  if (allWindows.length) {
-    allWindows[0].focus()
-  } else {
-    createWindow()
+    if (mainWindow.isMinimized()) mainWindow.restore()
+    mainWindow.focus()
   }
 })

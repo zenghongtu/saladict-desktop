@@ -1,16 +1,35 @@
-import styled from 'styled-components'
+import { Route, Routes } from 'react-router-dom'
 import { GlobalStyles } from './styles/GlobalStyles'
+import { Suspense } from 'react'
+import React from 'react'
+
+const Panel = React.lazy(() => import('./pages/Panel'))
+const Setting = React.lazy(() => import('./pages/Setting'))
 
 function App() {
   return (
     <>
       <GlobalStyles />
-      <iframe
-        frameBorder="0"
-        scrolling="no"
-        className="iframe"
-        src={`app://-/quick-search.html`}
-      ></iframe>
+
+      <GlobalStyles />
+      <Routes>
+        <Route
+          path="/setting"
+          element={
+            <Suspense fallback={null}>
+              <Setting />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/:page"
+          element={
+            <Suspense fallback={null}>
+              <Panel />
+            </Suspense>
+          }
+        />
+      </Routes>
     </>
   )
 }
